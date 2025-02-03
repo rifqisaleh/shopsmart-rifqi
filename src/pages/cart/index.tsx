@@ -85,6 +85,18 @@ const ShoppingCart: React.FC = () => {
           <div className="text-right text-xl font-bold">
             Total: ${total.toFixed(2)}
           </div>
+
+          {/* Checkout Button */}
+            {cart.length > 0 && (
+              <div className="text-center mt-6">
+                <button
+                  onClick={() => router.push("/checkout")}
+                    className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700"
+                    >
+                  Proceed to Checkout
+                  </button>
+                </div>
+              )}
         </div>
       )}
     </div>
