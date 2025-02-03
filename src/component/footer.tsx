@@ -37,6 +37,11 @@ const Footer: React.FC = () => {
               <Link href="/shipping-policy" className="hover:underline text-gray-400">
                 Terms & Conditions
               </Link>
+              </li>
+              <li>
+              <Link href="/aboutus" className="hover:underline text-gray-400">
+                About Us
+              </Link>
             </li>
           </ul>
         </div>
