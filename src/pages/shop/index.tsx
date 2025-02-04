@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import ProductCard from "@/component/ProductCard";
 import CategoryFilter from "@/component/CategoryFilter";
 
@@ -22,8 +23,11 @@ export const categoryMap: Record<string, string> = {
   "4": "Shoes",
   "5": "Misc",
 };
-//Product List, Category, filter and search bar state
+
 const ProductList: React.FC = () => {
+  const router = useRouter();
+  const { search } = router.query; // Get search query from URL
+
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const [filters, setFilters] = useState<{
@@ -32,11 +36,10 @@ const ProductList: React.FC = () => {
     priceRange: [number, number];
   }>({
     categoryId: null,
-    searchQuery: "",
+    searchQuery: search ? String(search) : "",
     priceRange: [0, 500],
   });
 
-  //Fetching error handler
   const [error, setError] = useState<string | null>(null);
 
   // Normalize product images
@@ -48,7 +51,7 @@ const ProductList: React.FC = () => {
     return [];
   };
 
-  //Fetch and category standardization
+  // Fetch and standardize categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -59,32 +62,12 @@ const ProductList: React.FC = () => {
 
         const data = await response.json();
 
-        // Map category IDs to standardized names and combine Misc categories
-        const standardizedCategories = data
-          .map((category: { id: string; name: string }) => ({
-            id: category.id,
-            name: categoryMap[category.id] || "Misc",
-          }))
-          .reduce(
-            (
-              uniqueCategories: { id: string; name: string }[],
-              category: { id: string; name: string }
-            ) => {
-              
-              // Ensure only one "Misc" category exists
-              if (category.name === "Misc") {
-                if (!uniqueCategories.some((cat) => cat.name === "Misc")) {
-                  uniqueCategories.push({ id: "5", name: "Misc" }); // Use "5" for the Misc category
-                }
-              } else {
-                uniqueCategories.push(category);
-              }
-              return uniqueCategories;
-            },
-            [] as { id: string; name: string }[]
-          );
+        // Map category IDs to standardized names
+        const standardizedCategories = data.map((category: { id: string; name: string }) => ({
+          id: category.id,
+          name: categoryMap[category.id] || "Misc",
+        }));
 
-            //Update state with standardized category
         setCategories(standardizedCategories);
       } catch (err) {
         console.error("Error fetching categories:", err);
@@ -95,31 +78,28 @@ const ProductList: React.FC = () => {
     fetchCategories();
   }, []);
 
-
-  //Fetch and process products based on active filters
+  // Fetch products based on filters
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}products`;
-        const url = filters.categoryId
-          ? `${baseUrl}/?categoryId=${filters.categoryId}`
-          : baseUrl;
+        let url = `${process.env.NEXT_PUBLIC_API_URL}products`;
+        if (filters.categoryId) {
+          url += `/?categoryId=${filters.categoryId}`;
+        }
 
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`);
         }
 
-         // Normalize and process product data
         const data: Product[] = await response.json();
         const processedProducts = data.map((product) => ({
           ...product,
           category: {
-            ...product.category,
             id: product.category?.id || "5",
-            name: categoryMap[product.category?.id || "5"], // Standardize category names
+            name: categoryMap[product.category?.id || "5"],
           },
-          images: normalizeImages(product.images), // Normalize images
+          images: normalizeImages(product.images),
         }));
 
         setProducts(processedProducts);
@@ -133,8 +113,22 @@ const ProductList: React.FC = () => {
     fetchProducts();
   }, [filters]);
 
-
-// Filter products based on search query and price range
+  // Update search query from URL dynamically
+  useEffect(() => {
+    if (!search) {
+      setFilters((prev) => ({
+        ...prev,
+        searchQuery: "",
+      }));
+      return;
+    }
+  
+    setFilters((prev) => ({
+      ...prev,
+      searchQuery: String(search),
+    }));
+  }, [search]);
+  // Filter products based on search query and price range
   const displayedProducts = products.filter((product) => {
     const matchesSearchQuery = product.title
       .toLowerCase()
@@ -150,20 +144,22 @@ const ProductList: React.FC = () => {
       {/* Filters Section */}
       <div className="lg:w-1/4 w-full space-y-6 mb-4 lg:mb-0">
         <CategoryFilter
-          filters={filters} // Pass active filters
-          categories={categories} // Pass category data
+          filters={filters}
+          categories={categories}
           onFilterChange={(updatedFilters) =>
-            setFilters((prev) => ({ ...prev, ...updatedFilters })) // Update filters when changed
+            setFilters((prev) => ({ ...prev, ...updatedFilters }))
           }
         />
       </div>
 
       {/* Products Section */}
       <div className="lg:w-3/4 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {error && <p className="text-red-500">{error}</p>} {/* Display error if present */}
-        {displayedProducts.map((product) => (
-          <ProductCard key={product.id} product={product} /> // Render each product card
-        ))}
+        {error && <p className="text-red-500">{error}</p>}
+        {displayedProducts.length > 0 ? (
+          displayedProducts.map((product) => <ProductCard key={product.id} product={product} />)
+        ) : (
+          <p className="text-gray-500">No products found.</p>
+        )}
       </div>
     </div>
   );

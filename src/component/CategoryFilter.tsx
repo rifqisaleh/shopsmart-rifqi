@@ -20,21 +20,22 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   categories,
   onFilterChange,
 }) => {
-  const { categoryId, searchQuery, priceRange } = filters;
+  const { categoryId, priceRange } = filters; // Removed searchQuery
+
+  // Ensure only one "Misc" category appears
+  const uniqueCategories = categories.reduce((acc: Category[], category) => {
+    if (category.name === "Misc") {
+      if (!acc.some((c) => c.name === "Misc")) {
+        acc.push({ id: "5", name: "Misc" });
+      }
+    } else {
+      acc.push(category);
+    }
+    return acc;
+  }, []);
 
   return (
     <div className="space-y-4">
-      {/* Search Bar */}
-      <div>
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={searchQuery}
-          onChange={(e) => onFilterChange({ searchQuery: e.target.value })}
-          className="w-full px-4 py-2 border rounded-md"
-        />
-      </div>
-
       {/* Category Buttons */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         <button
@@ -45,7 +46,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
         >
           All
         </button>
-        {categories.map((category) => (
+        {uniqueCategories.map((category) => (
           <button
             key={category.id}
             className={`px-3 py-2 rounded text-center ${

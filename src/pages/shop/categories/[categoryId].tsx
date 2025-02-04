@@ -1,45 +1,35 @@
-import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import ProductCard from "@/component/ProductCard";
 import CategoryFilter from "@/component/CategoryFilter";
-import { Product, categoryMap } from ".."; 
+import { Product, categoryMap } from "..";
 
 const CategoryPage: React.FC = () => {
   const router = useRouter();
-  const { categoryId } = router.query; 
+  const { categoryId, search } = router.query; // Get search from URL
 
-  //storing products
   const [products, setProducts] = useState<Product[]>([]);
-  
-  //storing available categories
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
-  
-  //filters
   const [filters, setFilters] = useState({
-    searchQuery: "",
-    priceRange: [0, 500] as [number, number], 
+    searchQuery: search ? String(search) : "", // Initialize with search from URL
+    priceRange: [0, 500] as [number, number],
   });
 
-  // State for handling errors
   const [error, setError] = useState<string | null>(null);
 
-  //fetch products when categories change
   useEffect(() => {
-    if (!categoryId) return; 
+    if (!categoryId) return;
 
     const fetchCategoryData = async () => {
       try {
-        // Fetch products(category ID)
         const resProducts = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}products/?categoryId=${String(categoryId)}`
         );
         if (!resProducts.ok) throw new Error("Failed to fetch products");
 
-        // Fetch all categories
         const resCategories = await fetch(`${process.env.NEXT_PUBLIC_API_URL}categories`);
         if (!resCategories.ok) throw new Error("Failed to fetch categories");
 
-        // Parse responses as JSON
         const productData: Product[] = await resProducts.json();
         const categoryData: { id: string; name: string }[] = await resCategories.json();
 
@@ -47,66 +37,95 @@ const CategoryPage: React.FC = () => {
         const standardizedProducts = productData.map((product) => ({
           ...product,
           category: {
-            id: product.category?.id || "5", // category id (if missing)
-            name: categoryMap[product.category?.id || "5"], 
+            id: product.category?.id || "5",
+            name: categoryMap[product.category?.id || "5"],
           },
-          images: Array.isArray(product.images) ? product.images : [], // Ensure images is always an array
+          images: Array.isArray(product.images) ? product.images : [],
         }));
 
-        // Standardize categories to ensure valid names
-        const standardizedCategories = categoryData.map((category) => ({
-          id: category.id,
-          name: categoryMap[category.id] || "Misc", // Assign default category name if missing
-        }));
+        // Standardize categories & prevent duplicate Misc category
+        const standardizedCategories = categoryData
+          .map((category) => ({
+            id: category.id,
+            name: categoryMap[category.id] || "Misc",
+          }))
+          .reduce((uniqueCategories, category) => {
+            if (category.name === "Misc") {
+              if (!uniqueCategories.some((cat) => cat.name === "Misc")) {
+                uniqueCategories.push({ id: "5", name: "Misc" });
+              }
+            } else {
+              uniqueCategories.push(category);
+            }
+            return uniqueCategories;
+          }, [] as { id: string; name: string }[]);
 
-        // Update state with fetched and standardized data
         setProducts(standardizedProducts);
         setCategories(standardizedCategories);
-        setError(null); 
+        setError(null);
       } catch (err) {
         console.error(err);
-        setError("Failed to load products or categories."); 
+        setError("Failed to load products or categories.");
       }
     };
 
-    fetchCategoryData(); // Execute the fetch function
-  }, [categoryId]); // Dependency array ensures this runs when categoryId changes
+    fetchCategoryData();
+  }, [categoryId]);
 
-  // Filter products based on search query and price range
+  // Update filters when URL search parameter changes
+  useEffect(() => {
+    if (!search) {
+      setFilters((prev) => ({
+        ...prev,
+        searchQuery: "",
+      }));
+      return;
+    }
+  
+    setFilters((prev) => ({
+      ...prev,
+      searchQuery: String(search),
+    }));
+  }, [search]);
+  
+
+  // Apply filtering
   const displayedProducts = products.filter((product) => {
     const matchesSearchQuery = product.title
       .toLowerCase()
-      .includes(filters.searchQuery.toLowerCase()); // Match product title with search input
+      .includes(filters.searchQuery.toLowerCase());
 
     const withinPriceRange =
-      product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1]; // Check if price is within range
+      product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1];
 
-    return matchesSearchQuery && withinPriceRange; // Only include products that match both conditions
+    return matchesSearchQuery && withinPriceRange;
   });
 
   return (
     <div className="flex flex-col lg:flex-row lg:space-x-4 p-4 mb-16 mt-16">
-     <div className="lg:w-1/4 w-full space-y-6 mb-4 lg:mb-0">
+      {/* Filters Section */}
+      <div className="lg:w-1/4 w-full space-y-6 mb-4 lg:mb-0">
         <CategoryFilter
           filters={{
-            categoryId: categoryId ? String(categoryId) : null, 
+            categoryId: categoryId ? String(categoryId) : null,
             ...filters,
           }}
-          categories={categories} 
+          categories={categories}
           onFilterChange={(updatedFilters) =>
-            setFilters((prev) => ({ ...prev, ...updatedFilters })) 
+            setFilters((prev) => ({ ...prev, ...updatedFilters }))
           }
         />
       </div>
 
-      {/* Products grid */}
+      {/* Products Section */}
       <div className="lg:w-3/4 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {error && <p className="text-red-500">{error}</p>} 
-        
-        {/* Render filtered products */}
-        {displayedProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+        {error && <p className="text-red-500">{error}</p>}
+
+        {displayedProducts.length > 0 ? (
+          displayedProducts.map((product) => <ProductCard key={product.id} product={product} />)
+        ) : (
+          <p className="text-gray-500">No products found.</p>
+        )}
       </div>
     </div>
   );
