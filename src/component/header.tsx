@@ -3,21 +3,19 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAuth } from "@/context/AuthContext";
 import { CartContext } from "@/context/CartContext";
+import { FiShoppingCart, FiUser, FiSearch } from "react-icons/fi"; // Import icons
 
 const Header: React.FC = () => {
-  console.log("Rendering Header...");
   const { isAuthenticated, isLoading, fetchWithAuth } = useAuth();
   const router = useRouter();
   const cartContext = useContext(CartContext);
   const [userProfile, setUserProfile] = useState<{ name: string; email: string } | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (!isAuthenticated) return;
-
       try {
         const response = await fetchWithAuth("auth/profile");
         const data = await response.json();
@@ -35,93 +33,99 @@ const Header: React.FC = () => {
 
   const { cartCount } = cartContext;
 
-  const handleCartClick = () => {
-    if (isAuthenticated) {
-      router.push("/cart");
-    } else {
-      router.push("/login");
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/shop?search=${encodeURIComponent(searchQuery)}`);
     }
-  };
-
-  const handleDashboardClick = () => {
-    router.push("/dashboard");
-  };
-
-  const handleLoginClick = () => {
-    router.push("/login");
+    setIsSearchOpen(false); // Close the search bar after searching
   };
 
   return (
-    <header className="bg-urbanChic-100 p-4 flex items-center justify-between">
-      {/* Left Section: Hamburger Menu */}
-      <div className="flex items-center">
-        <button className="sm:hidden block text-black" onClick={handleMenuToggle}>
-          <span className="hamburger-icon text-2xl">☰</span>
-        </button>
+    <header className="w-full">
+      {/* Top Bar - Shorter Height & Hidden on Mobile */}
+      <div className="hidden sm:flex bg-gray-900 text-white p-1.5 text-sm justify-end items-center">
+        <div className="space-x-6">
+          <Link href="/aboutus" className="hover:underline">
+            About Us
+          </Link>
+          <Link href="/shipping-policy" className="hover:underline">
+            Shipping Policy
+          </Link>
+        </div>
+      </div>
 
-        <nav
-          className={`${
-            isMenuOpen ? "block" : "hidden"
-          } absolute top-16 left-0 w-full bg-urbanChic-100 p-4 sm:static sm:flex sm:items-center sm:space-x-4 sm:w-auto`}
+      {/* Bottom Navigation Bar */}
+      <nav className="bg-white shadow-md p-4 flex justify-between items-center relative">
+        {/* Left: Shop Name */}
+        <div
+          className="text-xl font-bold cursor-pointer"
+          onClick={() => router.push("/")}
         >
-          <ul className="space-y-4 sm:space-y-0 sm:flex sm:space-x-4">
-            <li>
-              <Link href="/" className="text-gray-700 hover:text-gray-900 transition duration-200">
-              HOME
-              </Link>
-            </li>
-            <li>
-              <Link href="/shop" className="text-gray-700 hover:text-gray-900 transition duration-200">
-               SHOP
-              </Link>
-            </li>
-            <li>
-              <button
-                onClick={handleCartClick}
-                className="text-gray-700 hover:text-gray-900 transition duration-200"
-              >
-                CART
-                {cartCount > 0 && (
-                  <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
-                    {cartCount}
-                  </span>
-                )}
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </div>
-
-      {/* Center Section: Logo */}
-      <div className="text-3xl">
-        <Link href="/" className="mb-4 text-black">
           ShopSmart
-        </Link>
-      </div>
+        </div>
 
-      {/* Right Section: Authentication and Greeting */}
-      <div className="flex items-center space-x-4">
-        {isAuthenticated ? (
-          <>
-            <span className="hidden sm:block text-black">
-              Welcome, <strong>{userProfile?.name || "User"}</strong>
-            </span>
-            <button
-              onClick={handleDashboardClick}
-              className="text-gray-700 hover:text-gray-900 transition duration-200"
-            >
-              DASHBOARD
+        {/* Middle: Search Bar - Visible on Desktop, Icon on Mobile */}
+        <div className="hidden sm:flex w-1/2">
+          <form onSubmit={handleSearch} className="flex border border-gray-400 rounded-md overflow-hidden w-full">
+            <input
+              type="text"
+              className="w-full p-2 outline-none"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit" className="bg-gray-700 text-white px-4">
+              🔍
             </button>
-          </>
-        ) : (
+          </form>
+        </div>
+
+        {/* Right: Cart, User & Search Icons */}
+        <div className="flex items-center space-x-6">
+          {/* Search Icon (Mobile Only) */}
           <button
-            onClick={handleLoginClick}
-            className="text-gray-700 hover:text-gray-900 transition duration-200"
+            className="sm:hidden text-2xl"
+            onClick={() => setIsSearchOpen(!isSearchOpen)}
           >
-            LOGIN
+            <FiSearch />
           </button>
-        )}
-      </div>
+
+          {/* Cart Icon */}
+          <button onClick={() => (isAuthenticated ? router.push("/cart") : router.push("/login"))} className="relative">
+            <FiShoppingCart className="text-2xl" />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                {cartCount}
+              </span>
+            )}
+          </button>
+
+          {/* User Icon */}
+          <button onClick={() => (isAuthenticated ? router.push("/dashboard") : router.push("/login"))}>
+            <FiUser className="text-2xl" />
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Search Bar (Appears below when search icon is clicked) */}
+      {isSearchOpen && (
+        <div className="absolute top-full left-0 w-full bg-white shadow-md p-2">
+          <form onSubmit={handleSearch} className="flex border border-gray-400 rounded-md overflow-hidden w-full">
+            <input
+              type="text"
+              className="w-full p-2 outline-none"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              autoFocus
+            />
+            <button type="submit" className="bg-gray-700 text-white px-4">
+              🔍
+            </button>
+          </form>
+        </div>
+      )}
     </header>
   );
 };

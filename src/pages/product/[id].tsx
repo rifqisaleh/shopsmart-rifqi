@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { CartContext } from "@/context/CartContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { getSafeImage, parseImageUrl } from "@/utility/imagehelper";
 
 interface Product {
   id: number;
@@ -29,67 +30,12 @@ interface ProductDetailProps {
   product?: Product;
 }
 
-// Add this helper function at the top level
-const parseImageUrl = (images: string[] | string | undefined): string[] => {
-  if (!images) return ["/placeholder.png"];
-  
-  try {
-    // Case 1: If it's a string, try to parse it if it looks like JSON
-    if (typeof images === 'string') {
-      if (images.startsWith('[')) {
-        try {
-          const parsed = JSON.parse(images);
-          return Array.isArray(parsed) ? parsed.filter(url => url && typeof url === 'string') : ["/placeholder.png"];
-        } catch {
-          // If JSON parsing fails, try to extract URLs using regex
-          const urls = images.match(/https?:\/\/[^"\s,\]]+/g);
-          return urls || ["/placeholder.png"];
-        }
-      }
-      return [images];
-    }
-
-    // Case 2: If it's an array, process each element
-    if (Array.isArray(images)) {
-      const processedUrls = images
-        .map(img => {
-          if (typeof img === 'string') {
-            // Handle stringified JSON array
-            if (img.startsWith('[')) {
-              try {
-                const parsed = JSON.parse(img);
-                return Array.isArray(parsed) ? parsed[0] : img;
-              } catch {
-                // Extract URL using regex if JSON parsing fails
-                const match = img.match(/https?:\/\/[^"\s,\]]+/);
-                return match ? match[0] : null;
-              }
-            }
-            // Clean up regular string URL
-            return img.replace(/[\[\]"]/g, '').trim();
-          }
-          return null;
-        })
-        .filter((url): url is string => !!url && url.startsWith('http'));
-
-      return processedUrls.length > 0 ? processedUrls : ["/placeholder.png"];
-    }
-
-    return ["/placeholder.png"];
-  } catch (error) {
-    console.error("Error parsing image URL:", error);
-    return ["/placeholder.png"];
-  }
-};
-
 const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
   const cartContext = useContext(CartContext);
   const router = useRouter(); // Initialize router
+  const [relatedProducts, setRelatedProducts] = React.useState<Product[]>([]);
 
   if (!product) return <p>Product not found!</p>;
-
-  // Related products state
-  const [relatedProducts, setRelatedProducts] = React.useState<Product[]>([]);
 
   // Fake reviews for the product
   const fakeReviews = product?.id ? productReviews[product.id] || [{ rating: 4.5 }] : [];
@@ -153,7 +99,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
        
         <div className="w-full md:w-1/2">
           <Image
-            src={parseImageUrl(product.images)[0]}
+            src={(parseImageUrl(product.images)[0])}
             alt={product.title}
             width={500}
             height={500}
