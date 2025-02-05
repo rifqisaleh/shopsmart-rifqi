@@ -26,33 +26,33 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   };
 
   return (
-    <div className="border rounded-3xl p-4 shadow-lg bg-white flex flex-col items-center justify-center">
+    <div className="border border-black text-black rounded-xl p-3 shadow-lg bg-white flex flex-col items-center justify-center h-[350px]">
       {/* Link to Product Details */}
-      <Link href={`/product/${product.id}`} className="block">
+      <Link href={`/product/${product.id}`} className="block w-full h-48">
         <Image
           src={getFirstImage(product.images)}
           alt={product.title}
-          width={300}
-          height={300}
-          className="w-full h-auto object-cover rounded"
+          width={200}
+          height={200}
+          className="w-full h-full object-contain rounded"
           priority={true} // Improve performance for critical images
         />
       </Link>
   
       {/* Product Title */}
-      <Link href={`/product/${product.id}`} className="block text-center">
-        <h2 className="text-lg font-semibold text-gray-800 mb-2 hover:text-blue-500 transition">
+      <Link href={`/product/${product.id}`} className="block text-center mt-2">
+        <h2 className="text-sm font-semibold text-gray-800 hover:text-blue-500 transition line-clamp-2">
           {product.title}
         </h2>
       </Link>
   
       {/* Product Price */}
-      <p className="text-gray-600">${product.price.toFixed(2)}</p>
+      <p className="text-gray-600 text-sm mt-1">${product.price.toFixed(2)}</p>
   
       {/* Add to Cart Button */}
       <button
         onClick={handleAddToCart}
-        className="bg-urbanChic-500 text-white px-4 py-2 rounded mt-2 font-medium hover:bg-urbanChic-900 focus:outline-none"
+        className="bg-urbanChic-500 text-white px-3 py-1.5 rounded text-sm mt-2 font-medium hover:bg-urbanChic-900 focus:outline-none"
       >
         Add to Cart
       </button>

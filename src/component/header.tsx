@@ -67,7 +67,7 @@ const Header: React.FC = () => {
 
       {/* Middle: Search Bar - Visible on Desktop, Icon on Mobile */}
         <div className="hidden sm:flex w-1/2">
-          <form onSubmit={handleSearch} className="flex border border-gray-400 rounded-xl overflow-hidden w-full bg-white">
+          <form onSubmit={handleSearch} className="flex border border-black rounded-xl overflow-hidden w-full bg-white">
             <input
               type="text"
               className="w-full p-2 outline-none bg-transparent"
