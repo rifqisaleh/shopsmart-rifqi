@@ -6,15 +6,15 @@ import { faFacebook, faTwitter, faInstagram, faLinkedin } from "@fortawesome/fre
 const Footer: React.FC = () => {
   console.log("Rendering Footer...");
   return (
-    <footer className="bg-peach-100 text-white py-8">
+    <footer className="bg-softOlive text-white py-8">
       <section className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-8">
         {/* Shipping Policy Section */}
         <div>
           <h3 className="text-lg text-black font-bold mb-4">Shipping Policy</h3>
-          <p className="text-gray-400">
+          <p className="text-white">
             We offer fast and reliable shipping to your doorstep. Orders are processed within 24 hours on business days.
           </p>
-          <p className="text-gray-400">
+          <p className="text-white">
             For detailed information, visit our <a href="/shipping-policy" className="text-blue-400 hover:underline">Shipping Policy</a> page.
           </p>
         </div>
@@ -24,22 +24,22 @@ const Footer: React.FC = () => {
           <h3 className="text-lg text-black font-bold mb-4">Quick Links</h3>
           <ul className="space-y-2">
             <li>
-              <Link href="/" className="hover:underline text-gray-400">
+              <Link href="/" className="hover:underline text-white">
                 Home
               </Link>
             </li>
             <li>
-              <Link href="/shop" className="hover:underline text-gray-400">
+              <Link href="/shop" className="hover:underline text-white">
                 Shop
               </Link>
             </li>
             <li>
-              <Link href="/shipping-policy" className="hover:underline text-gray-400">
+              <Link href="/shipping-policy" className="hover:underline text-white">
                 Terms & Conditions
               </Link>
               </li>
               <li>
-              <Link href="/aboutus" className="hover:underline text-gray-400">
+              <Link href="/aboutus" className="hover:underline text-white">
                 About Us
               </Link>
             </li>
@@ -50,16 +50,16 @@ const Footer: React.FC = () => {
         <div>
           <h3 className="text-lg font-bold text-black mb-4">Follow Us</h3>
           <div className="flex space-x-4">
-            <a href="#" className="text-gray-400 hover:text-blue-500">
+            <a href="#" className="text-white hover:text-blue-500">
               <FontAwesomeIcon icon={faFacebook} size="2x" />
             </a>
-            <a href="#" className="text-gray-400 hover:text-pink-500">
+            <a href="#" className="text-white hover:text-pink-500">
               <FontAwesomeIcon icon={faInstagram} size="2x" />
             </a>
-            <a href="#" className="text-gray-400 hover:text-blue-400">
+            <a href="#" className="text-white hover:text-blue-400">
               <FontAwesomeIcon icon={faTwitter} size="2x" />
             </a>
-            <a href="#" className="text-gray-400 hover:text-blue-700">
+            <a href="#" className="text-white hover:text-blue-700">
               <FontAwesomeIcon icon={faLinkedin} size="2x" />
             </a>
           </div>

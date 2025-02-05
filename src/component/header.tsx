@@ -44,7 +44,7 @@ const Header: React.FC = () => {
   return (
     <header className="w-full">
       {/* Top Bar - Shorter Height & Hidden on Mobile */}
-      <div className="hidden sm:flex bg-warmBrown-50 text-black p-1.5 text-sm justify-end items-center">
+      <div className="hidden sm:flex bg-customGray text-black p-1.5 text-sm justify-end items-center">
         <div className="space-x-6">
           <Link href="/aboutus" className="hover:underline">
             About Us
@@ -56,7 +56,7 @@ const Header: React.FC = () => {
       </div>
 
       {/* Bottom Navigation Bar */}
-      <nav className="bg-champagne shadow-md p-4 flex justify-between items-center relative">
+      <nav className="bg-softOlive shadow-md p-4 flex justify-between items-center relative">
         {/* Left: Shop Name */}
         <div
           className="text-xl font-bold text-urbanChic-500 cursor-pointer"

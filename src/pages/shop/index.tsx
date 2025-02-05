@@ -141,6 +141,7 @@ const ProductList: React.FC = () => {
   });
 
   return (
+    
     <div className="container mx-auto p-4 mb-16 mt-16">
       {/* Filters Section - Now full width above products */}
       <div className="w-full mb-8 bg-white p-6 rounded-lg shadow-lg">

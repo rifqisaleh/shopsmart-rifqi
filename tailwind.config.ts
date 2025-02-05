@@ -23,7 +23,8 @@ module.exports = {
           800: '#1D2428',
           900: '#121718',
         },
-        customGray: '#e1e1e1', // Added your custom gray color
+        customGray: '#e1e1e1', // Previously added custom gray
+        softOlive: '#bbbca7', // New color added
       },
       fontFamily: {
         philosopher: ['Philosopher', 'sans-serif'],
