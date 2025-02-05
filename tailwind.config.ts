@@ -25,6 +25,7 @@ module.exports = {
         },
         customGray: '#e1e1e1', // Previously added custom gray
         softOlive: '#bbbca7', // New color added
+        greenSage: '#B2AC88',
       },
       fontFamily: {
         philosopher: ['Philosopher', 'sans-serif'],

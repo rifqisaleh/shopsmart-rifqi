@@ -56,7 +56,7 @@ const Header: React.FC = () => {
       </div>
 
       {/* Bottom Navigation Bar */}
-      <nav className="bg-softOlive shadow-md p-4 flex justify-between items-center relative">
+      <nav className="bg-greenSage shadow-md p-4 flex justify-between items-center relative">
         {/* Left: Shop Name */}
         <div
           className="text-xl font-bold text-urbanChic-500 cursor-pointer"
