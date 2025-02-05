@@ -6,17 +6,27 @@ import { faFacebook, faTwitter, faInstagram, faLinkedin } from "@fortawesome/fre
 const Footer: React.FC = () => {
   console.log("Rendering Footer...");
   return (
-    <footer className="bg-softOlive text-white py-8">
-      <section className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-8">
-        {/* Shipping Policy Section */}
+    <footer className="bg-softOlive text-white py-12">
+      <section className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-12">
+        {/* Newsletter Subscription Section */}
         <div>
-          <h3 className="text-lg text-black font-bold mb-4">Shipping Policy</h3>
-          <p className="text-white">
-            We offer fast and reliable shipping to your doorstep. Orders are processed within 24 hours on business days.
+          <h3 className="text-lg font-bold text-black mb-4">Subscribe to Our Newsletter</h3>
+          <p className="text-white mb-4">
+            Stay updated with our latest offers and products!
           </p>
-          <p className="text-white">
-            For detailed information, visit our <a href="/shipping-policy" className="text-blue-400 hover:underline">Shipping Policy</a> page.
-          </p>
+          <form className="flex flex-col space-y-2">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="px-4 py-2 rounded-md text-gray-800"
+            />
+            <button
+              type="submit"
+              className="bg-olive-50 text-black font-bold px-4 py-2 rounded-md hover:bg-olive-500 transition-colors"
+            >
+              Subscribe
+            </button>
+          </form>
         </div>
 
         {/* Quick Links Section */}

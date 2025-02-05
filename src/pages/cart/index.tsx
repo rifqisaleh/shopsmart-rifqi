@@ -2,6 +2,8 @@ import React, { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import { CartContext } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext"; // Adjust path as needed
+import PriceConverter from "@/component/PriceConverter"; // Add this import
+import { FaTrash } from 'react-icons/fa'; // Add this import
 
 const ShoppingCart: React.FC = () => {
   const { isAuthenticated } = useAuth(); // Access authentication state
@@ -47,8 +49,8 @@ const ShoppingCart: React.FC = () => {
         justifyContent: "center",
       }}
     >
-      <div className="max-w-4xl mx-auto p-6 mb-24 mt-24 rounded-lg shadow-lg bg-urbanChic-100 bg-opacity-90">
-        <h1 className="text-4xl text-urbanChic-600 mb-16 text-center">Shopping Cart</h1>
+      <div className="max-w-4xl mx-auto p-6 mb-24 mt-32 rounded-lg shadow-lg bg-white bg-opacity-90">
+        <h1 className="text-4xl text-urbanChic-600 mt-12 mb-12 text-center">Shopping Cart</h1>
         {cart.length === 0 ? (
           <p className="text-center text-gray-600 mb-16 mt-16">Your cart is empty.</p>
         ) : (
@@ -74,13 +76,16 @@ const ShoppingCart: React.FC = () => {
                 {/* Product Details */}
                 <div className="flex-1">
                   <p className="text-lg font-semibold">{item.title}</p>
-                  <p className="text-gray-600">${item.price.toFixed(2)}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-gray-600">${item.price.toFixed(2)}</p>
+                    <PriceConverter usdAmount={item.price} />
+                  </div>
                 </div>
   
                 {/* Quantity Input */}
                 <input
                   type="number"
-                  className="w-9 border rounded-md mr-16 text-center"
+                  className="w-9 border rounded-md ml-16 mr-16 text-center"
                   min="1"
                   value={item.quantity}
                   onChange={(e) =>
@@ -88,18 +93,20 @@ const ShoppingCart: React.FC = () => {
                   }
                 />
   
-                {/* Remove Button */}
+                {/* Remove Button - Replace the existing button with this */}
                 <button
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  className="p-2 text-red-500 hover:text-red-700 transition-colors"
                   onClick={() => handleRemoveItem(item.id)}
+                  title="Remove item"
                 >
-                  Remove
+                  <FaTrash size={20} />
                 </button>
               </div>
             ))}
             {/* Display the total */}
-            <div className="text-right text-xl font-bold">
+            <div className="text-right text-xl font-bold flex justify-end items-center gap-4">
               Total: ${total.toFixed(2)}
+              <PriceConverter usdAmount={total} />
             </div>
   
             {/* Checkout Button */}
@@ -107,7 +114,7 @@ const ShoppingCart: React.FC = () => {
               <div className="text-center mt-6">
                 <button
                   onClick={() => router.push("/checkout")}
-                  className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700"
+                  className="bg-olive-300 text-black px-6 py-3 rounded-md mb-12 hover:bg-olive-500"
                 >
                   Proceed to Checkout
                 </button>

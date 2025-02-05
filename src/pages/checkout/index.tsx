@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { CartContext } from "@/context/CartContext";
 import { useRouter } from "next/router";
+import PriceConverter from "@/component/PriceConverter"; // Add this import
 
 const Checkout: React.FC = () => {
   const cartContext = useContext(CartContext);
@@ -51,10 +52,16 @@ const Checkout: React.FC = () => {
           {cart.map((item) => (
             <div key={item.id} className="flex justify-between p-4 border-b">
               <span>{item.title} (x{item.quantity})</span>
-              <span>${(item.price * item.quantity).toFixed(2)}</span>
+              <div className="flex items-center gap-4">
+                <span>${(item.price * item.quantity).toFixed(2)}</span>
+                <PriceConverter usdAmount={item.price * item.quantity} />
+              </div>
             </div>
           ))}
-          <div className="text-right text-xl font-bold mt-4">Total: ${total.toFixed(2)}</div>
+          <div className="text-right text-xl font-bold mt-4 flex justify-end items-center gap-4">
+            Total: ${total.toFixed(2)}
+            <PriceConverter usdAmount={total} />
+          </div>
         </div>
       )}
 
@@ -110,7 +117,7 @@ const Checkout: React.FC = () => {
         {/* Checkout Button */}
         <button
           onClick={handlePayment}
-          className="w-full mt-6 bg-green-600 text-white py-3 rounded hover:bg-green-700"
+          className="border border-black font-bond w-full mt-6 mb-12 bg-olive-50 text-black py-3 rounded hover:bg-olive-500"
         >
           Proceed to Payment
         </button>

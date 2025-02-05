@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CartContext } from "@/context/CartContext";
 import Image from "next/image";
 import { parseImageUrl } from "@/utility/imagehelper";
+import PriceConverter from './PriceConverter';
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const getFirstImage = (images: string[] | string | null): string => {
@@ -47,7 +48,10 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
       </Link>
   
       {/* Product Price */}
-      <p className="text-gray-600 text-sm mt-1">${product.price.toFixed(2)}</p>
+      <div className="flex flex-col items-center gap-1 mt-1">
+        <p className="text-gray-600 text-sm">${product.price.toFixed(2)}</p>
+        <PriceConverter usdAmount={product.price} />
+      </div>
   
       {/* Add to Cart Button */}
       <button

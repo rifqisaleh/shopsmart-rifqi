@@ -78,25 +78,31 @@ const CategoryFilter: React.FC<CategoryFilterProps> = React.memo(({ filters, cat
       <div>
         <h3 className="text-lg font-semibold text-gray-800 mt-5 mb-3">Price Range</h3>
         <div className="flex flex-col sm:flex-row items-center gap-2">
-          <input
-            type="number"
-            name="min"
-            min={0}
-            max={1000}
-            value={filters.priceRange[0]}
-            onChange={handlePriceRangeChange}
-            className="w-full sm:w-24 p-2 border rounded-md text-center text-sm"
-          />
+          <div className="relative w-full sm:w-24">
+            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-600">$</span>
+            <input
+              type="number"
+              name="min"
+              min={0}
+              max={1000}
+              value={filters.priceRange[0]}
+              onChange={handlePriceRangeChange}
+              className="w-full sm:w-24 p-2 pl-6 border rounded-md text-center text-sm"
+            />
+          </div>
           <span className="text-gray-600">to</span>
-          <input
-            type="number"
-            name="max"
-            min={0}
-            max={1000}
-            value={filters.priceRange[1]}
-            onChange={handlePriceRangeChange}
-            className="w-full sm:w-24 p-2 border rounded-md text-center text-sm"
-          />
+          <div className="relative w-full sm:w-24">
+            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-600">$</span>
+            <input
+              type="number"
+              name="max"
+              min={0}
+              max={1000}
+              value={filters.priceRange[1]}
+              onChange={handlePriceRangeChange}
+              className="w-full sm:w-24 p-2 pl-6 border rounded-md text-center text-sm"
+            />
+          </div>
         </div>
       </div>
     </div>
