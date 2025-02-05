@@ -1,30 +1,35 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import ProductCard from "@/component/ProductCard";
 import CategoryFilter from "@/component/CategoryFilter";
 import { Product, categoryMap } from "..";
 
+const initialFilters = {
+  searchQuery: "",
+  priceRange: [0, 500] as [number, number],
+};
+
 const CategoryPage: React.FC = () => {
   const router = useRouter();
-  const { categoryId, search } = router.query; // Get search from URL
+  const { categoryId, search } = router.query;
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
-  const [filters, setFilters] = useState({
-    searchQuery: search ? String(search) : "", // Initialize with search from URL
-    priceRange: [0, 500] as [number, number],
-  });
+  const [filters, setFilters] = useState(() => ({
+    ...initialFilters,
+    searchQuery: search ? String(search) : "",
+  }));
 
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (!categoryId) return;
+    if (!router.isReady) return;
 
     const fetchCategoryData = async () => {
+      setLoading(true);
       try {
-        const resProducts = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}products/?categoryId=${String(categoryId)}`
-        );
+        const resProducts = await fetch(`${process.env.NEXT_PUBLIC_API_URL}products`);
         if (!resProducts.ok) throw new Error("Failed to fetch products");
 
         const resCategories = await fetch(`${process.env.NEXT_PUBLIC_API_URL}categories`);
@@ -33,7 +38,6 @@ const CategoryPage: React.FC = () => {
         const productData: Product[] = await resProducts.json();
         const categoryData: { id: string; name: string }[] = await resCategories.json();
 
-        // Standardize products to ensure valid category and images
         const standardizedProducts = productData.map((product) => ({
           ...product,
           category: {
@@ -43,81 +47,76 @@ const CategoryPage: React.FC = () => {
           images: Array.isArray(product.images) ? product.images : [],
         }));
 
-        // Standardize categories & prevent duplicate Misc category
-        const standardizedCategories = categoryData
-          .map((category) => ({
-            id: category.id,
-            name: categoryMap[category.id] || "Misc",
-          }))
-          .reduce((uniqueCategories, category) => {
-            if (category.name === "Misc") {
-              if (!uniqueCategories.some((cat) => cat.name === "Misc")) {
-                uniqueCategories.push({ id: "5", name: "Misc" });
-              }
-            } else {
-              uniqueCategories.push(category);
-            }
-            return uniqueCategories;
-          }, [] as { id: string; name: string }[]);
-
         setProducts(standardizedProducts);
-        setCategories(standardizedCategories);
+        setCategories(categoryData);
         setError(null);
       } catch (err) {
-        console.error(err);
+        console.error("Error Fetching Data:", err);
         setError("Failed to load products or categories.");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchCategoryData();
-  }, [categoryId]);
+  }, [router.isReady]);
 
-  // Update filters when URL search parameter changes
-  useEffect(() => {
-    if (!search) {
-      setFilters((prev) => ({
-        ...prev,
-        searchQuery: "",
-      }));
-      return;
-    }
-  
-    setFilters((prev) => ({
-      ...prev,
-      searchQuery: String(search),
-    }));
-  }, [search]);
-  
+  const processedCategories = useMemo(() => {
+    if (!categories?.length) return [];
+    
+    return categories.reduce((acc, category) => {
+      const categoryName = categoryMap[category.id] || "Misc";
+      if (categoryName === "Misc" && acc.some(cat => cat.name === "Misc")) {
+        return acc;
+      }
+      return [...acc, { id: category.id, name: categoryName }];
+    }, [] as { id: string; name: string }[]);
+  }, [categories]);
 
-  // Apply filtering
-  const displayedProducts = products.filter((product) => {
-    const matchesSearchQuery = product.title
-      .toLowerCase()
-      .includes(filters.searchQuery.toLowerCase());
+  const handleFilterChange = useCallback(
+    (updatedFilters: Partial<typeof filters>) => {
+      setFilters((prev) => ({ ...prev, ...updatedFilters }));
+    },
+    []
+  );
 
-    const withinPriceRange =
-      product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1];
+  const displayedProducts = useMemo(() => {
+    return products.filter((product) => {
+      // Convert both IDs to strings and compare
+      const productCategoryId = String(product.category?.id);
+      const currentCategoryId = String(categoryId);
+      
+      const matchesCategory = !categoryId || productCategoryId === currentCategoryId;
+      const matchesSearchQuery =
+        !filters.searchQuery || product.title.toLowerCase().includes(filters.searchQuery.toLowerCase());
+      const withinPriceRange =
+        product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1];
 
-    return matchesSearchQuery && withinPriceRange;
-  });
+      console.log('Product Category:', productCategoryId, 'Current Category:', currentCategoryId, 'Matches:', matchesCategory);
+
+      return matchesCategory && matchesSearchQuery && withinPriceRange;
+    });
+  }, [products, filters, categoryId]);
+
+  const categoryFilterProps = useMemo(() => ({
+    filters: {
+      categoryId: categoryId ? String(categoryId) : null,
+      ...filters,
+    },
+    categories: processedCategories,
+    onFilterChange: handleFilterChange,
+  }), [categoryId, filters, processedCategories, handleFilterChange]);
+
+  if (loading) return <p className="text-center text-gray-500">Loading products...</p>;
 
   return (
     <div className="flex flex-col lg:flex-row lg:space-x-4 p-4 mb-16 mt-16">
-      {/* Filters Section */}
-      <div className="lg:w-1/4 w-full space-y-6 mb-4 lg:mb-0">
-        <CategoryFilter
-          filters={{
-            categoryId: categoryId ? String(categoryId) : null,
-            ...filters,
-          }}
-          categories={categories}
-          onFilterChange={(updatedFilters) =>
-            setFilters((prev) => ({ ...prev, ...updatedFilters }))
-          }
-        />
-      </div>
+      {processedCategories.length > 0 && (
+        <div className="lg:w-1/4 w-full space-y-6 mb-4 lg:mb-0">
+          <CategoryFilter {...categoryFilterProps} />
+        </div>
+      )}
 
-      {/* Products Section */}
       <div className="lg:w-3/4 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {error && <p className="text-red-500">{error}</p>}
 

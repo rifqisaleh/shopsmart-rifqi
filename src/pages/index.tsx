@@ -3,6 +3,7 @@ import Slider from "react-slick";
 import { useRouter } from "next/router";
 import { categoryMap } from "./shop";
 import Head from "next/head";
+import { parseImageUrl } from "@/utility/imagehelper";
 
 interface Product {
   id: number;
@@ -37,35 +38,47 @@ const LandingPage: React.FC = () => {
           fetch(`${process.env.NEXT_PUBLIC_API_URL}products`),
           fetch(`${process.env.NEXT_PUBLIC_API_URL}categories`),
         ]);
-
+  
         if (!productsResponse.ok || !categoriesResponse.ok) {
           throw new Error(
             `API error: ${productsResponse.statusText} / ${categoriesResponse.statusText}`
           );
         }
-
+  
         const [productsData, categoriesData] = await Promise.all([
           productsResponse.json(),
           categoriesResponse.json(),
         ]);
-
+  
         const products = Array.isArray(productsData) ? productsData : [];
+  
+        // Extract category ID from query params
+        const { category } = router.query;
+  
+        // If a category is selected, filter products by that category
+        let filteredProducts = products;
+        if (category) {
+          filteredProducts = products.filter(
+            (product) => product.category?.id.toString() === String(category)
+          );
+        }
+        
+  
         const uniqueFeaturedProducts = new Map();
-
-        products.forEach((product) => {
+        filteredProducts.forEach((product) => {
           if (!uniqueFeaturedProducts.has(product.category?.id)) {
             uniqueFeaturedProducts.set(product.category?.id, product);
           }
         });
-
+  
         setFeaturedProducts(Array.from(uniqueFeaturedProducts.values()));
-
+  
         const categories = Array.isArray(categoriesData) ? categoriesData : [];
         const allowedCategoryIds = Object.keys(categoryMap);
         const filteredCategories = categories.filter((category) =>
           allowedCategoryIds.includes(category.id.toString())
         );
-
+  
         setCategories(filteredCategories);
       } catch (err: any) {
         setError("Failed to load data. Please try again later.");
@@ -73,14 +86,14 @@ const LandingPage: React.FC = () => {
         setIsLoading(false);
       }
     };
-
+  
     fetchData();
-  }, []);
+  }, [router.query.category]); // Depend on the category query param
+  
 
   const getFirstImage = (images: string[] | string | null): string => {
-    if (Array.isArray(images) && images.length > 0) return images[0];
-    if (typeof images === "string" && images.startsWith("http")) return images;
-    return "/fallback-image.jpg";
+    const parsedImages = parseImageUrl(images ?? undefined);
+    return parsedImages[0];
   };
 
   const settings = {
@@ -176,7 +189,10 @@ const LandingPage: React.FC = () => {
                   <div
                     key={category.id}
                     className="flex flex-col items-center cursor-pointer"
-                    onClick={() => router.push(`/shop?category=${category.id}`)}
+                    onClick={() => {
+                      console.log('Navigating to category:', category.id);
+                      router.push(`/shop/categories/${category.id}`);
+                    }}
                   >
                     <img
                       src={category.image || "/placeholder.png"}

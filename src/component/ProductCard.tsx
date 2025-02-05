@@ -3,12 +3,13 @@ import { Product } from "@/pages/shop";
 import Link from "next/link";
 import { CartContext } from "@/context/CartContext";
 import Image from "next/image";
+import { parseImageUrl } from "@/utility/imagehelper";
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
-  const imageUrl =
-    product.images && product.images.length > 0
-      ? product.images[0]
-      : "/placeholder.png";
+  const getFirstImage = (images: string[] | string | null): string => {
+    const parsedImages = parseImageUrl(images ?? undefined);
+    return parsedImages[0];
+  };
 
   // Access the CartContext and handle the case where it might be undefined
   const context = useContext(CartContext);
@@ -29,11 +30,11 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
       {/* Link to Product Details */}
       <Link href={`/product/${product.id}`} className="block">
         <Image
-          src={imageUrl}
+          src={getFirstImage(product.images)}
           alt={product.title}
-          width={200}
-          height={200}
-          className="object-cover mb-2 rounded"
+          width={300}
+          height={300}
+          className="w-full h-auto object-cover rounded"
           priority={true} // Improve performance for critical images
         />
       </Link>

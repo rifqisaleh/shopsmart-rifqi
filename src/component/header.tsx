@@ -110,7 +110,7 @@ const Header: React.FC = () => {
 
       {/* Mobile Search Bar (Appears below when search icon is clicked) */}
       {isSearchOpen && (
-        <div className="absolute top-full left-0 w-full bg-white shadow-md p-2">
+        <div className="sm:hidden fixed left-0 right-0 bg-white shadow-md p-2 z-50" style={{ top: '64px' }}>
           <form onSubmit={handleSearch} className="flex border border-gray-400 rounded-md overflow-hidden w-full">
             <input
               type="text"

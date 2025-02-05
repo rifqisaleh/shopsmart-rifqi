@@ -128,6 +128,7 @@ const ProductList: React.FC = () => {
       searchQuery: String(search),
     }));
   }, [search]);
+  
   // Filter products based on search query and price range
   const displayedProducts = products.filter((product) => {
     const matchesSearchQuery = product.title
