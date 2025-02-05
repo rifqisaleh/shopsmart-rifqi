@@ -127,21 +127,18 @@ const LandingPage: React.FC = () => {
           <>
             {/* Hero Section with Large Background */}
             <div
-                className="w-full min-h-screen flex items-start px-6 py-16 mt-0"
+                className="w-full min-h-screen flex items-start px-6 py-16 mt-0 bg-no-repeat bg-center md:bg-cover bg-contain"
                 style={{
                   backgroundImage: "url('/background.jpg')",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
                   minHeight: "100vh", // Keeps background stable
                   width: "100vw",
                   margin: "0",
                   padding: "0",
-                  backgroundAttachment: "scroll", // Prevents background from moving when keyboard opens
+                  backgroundAttachment: "scroll", 
                 }}
               >
-                <div className="w-full max-w-7xl flex flex-col items-start justify-start text-urbanChic-600  text-left p-6 md:p-10 pt-24 md:pt-32">
-                <h1 className="text-4xl md:text-9xl font-bold drop-shadow-lg mb-4 md:mb-8">
+                <div className="w-full max-w-7xl flex flex-col items-center md:items-start justify-center text-urbanChic-600 text-center md:text-left p-6 md:p-10 pt-24 md:pt-32">
+                  <h1 className="text-4xl text-urbanChic-700 md:text-9xl drop-shadow-lg mb-4 md:mb-8">
                   Welcome to ShopSmart!
                 </h1>
                 <p className="text-lg md:text-3xl text-gray-600 mt-4 md:mt-8 max-w-full md:max-w-2xl drop-shadow-md">
@@ -158,50 +155,52 @@ const LandingPage: React.FC = () => {
 
            
               {/* Featured Products Section */}
-      <div className="w-full max-w-7xl mt-16 mb-16">
-        <h2 className="text-5xl text-urbanChic-600 mb-4 text-center">
+      <div className="w-full max-w-7xl mt-2 md:mt-10 mb-10">
+        <h2 className="text-4xl text-urbanChic-700 mb-4 text-center md:text-7xl">
           FEATURED PRODUCTS
         </h2>
         <p className="text-lg text-gray-600 text-center mb-10">
           Check out our featured product – handpicked just for you!
         </p>
 
-        <Slider {...settings} slidesToShow={1}> {/* Show only 1 product at a time */}
-          {featuredProducts.map((product) => (
-            <div key={product.id} className="p-4">
-              <div
-                className="flex flex-col md:flex-row items-center bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer hover:shadow-xl transition"
-                onClick={() => router.push(`/product/${product.id}`)}
-              >
-                {/* Product Info (Left on Desktop, Above on Mobile) */}
-                <div className="w-full md:w-1/2 p-8 md:p-12 text-center md:text-left">
-                  <h2 className="text-3xl font-semibold text-gray-900">{product.title}</h2>
-                  <p className="text-lg text-gray-600 mt-4 leading-relaxed">
-                    {product.description
-                      ? product.description.substring(0, 150) + "..."
-                      : "Explore our latest high-quality products tailored just for you."}
-                  </p>
-                  <p className="text-xl font-bold text-urbanChic-600 mt-6">${product.price.toFixed(2)}</p>
-                </div>
+        <Slider {...settings} slidesToShow={1}>
+        {featuredProducts.map((product) => (
+          <div key={product.id} className="p-4 flex justify-center">
+            <div
+              className="flex flex-col md:flex-row items-center bg-white shadow-lg rounded-3xl overflow-hidden cursor-pointer hover:shadow-xl transition md:gap-12 md:max-w-[1500px] w-full md:p-16"
+              onClick={() => router.push(`/product/${product.id}`)}
+            >
+              {/* Product Image (Always on the Left) */}
+              <div className="w-full md:w-[450px] flex justify-center">
+                <img
+                  src={getFirstImage(product.images)}
+                  alt={product.title}
+                  className="w-[450px] h-[450px] md:w-[500px] h-[500px] object-cover rounded-lg"
+                />
+              </div>
 
-                {/* Product Image (Right on Desktop, Below on Mobile) */}
-                <div className="w-full md:w-1/2 flex justify-center">
-                  <img
-                    src={getFirstImage(product.images)}
-                    alt={product.title}
-                    className="w-full md:w-[450px] h-[300px] md:h-[500px] object-cover rounded-lg"
-                  />
-                </div>
+              {/* Product Info (Always on the Right) */}
+              <div className="w-full md:w-1/2 flex-grow p-8 mt-6 mb-6 md:p-12 text-center md:text-left">
+                <h2 className="text-3xl font-semibold text-gray-900">{product.title}</h2>
+                <p className="text-lg text-gray-600 mt-4 leading-relaxed">
+                  {product.description
+                    ? product.description.substring(0, 150) + "..."
+                    : "Explore our latest high-quality products tailored just for you."}
+                </p>
+                <p className="text-xl font-bold text-urbanChic-600 mt-6">${product.price.toFixed(2)}</p>
               </div>
             </div>
-          ))}
-        </Slider>
+          </div>
+        ))}
+      </Slider>
+
+
       </div>
 
 
             {/* Shop by Category Section */}
             <div className="w-full max-w-7xl mt-16 mb-16">
-              <h2 className="text-5xl text-urbanChic-600 mb-16 text-center">
+              <h2 className="text-5xl text-urbanChic-700 mb-16 text-center">
                 SHOP BY CATEGORY
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">

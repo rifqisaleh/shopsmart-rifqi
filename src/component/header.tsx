@@ -59,7 +59,7 @@ const Header: React.FC = () => {
       <nav className="bg-greenSage shadow-md p-4 flex justify-between items-center relative">
         {/* Left: Shop Name */}
         <div
-          className="text-xl font-bold text-urbanChic-500 cursor-pointer"
+          className="text-3xl text-urbanChic-700 cursor-pointer"
           onClick={() => router.push("/")}
         >
           ShopSmart
