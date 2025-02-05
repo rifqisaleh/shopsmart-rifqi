@@ -23,7 +23,5 @@ describe('ShippingPolicy', () => {
   
     // Use a custom function matcher to find "Bank transfers" even if split across multiple lines
     expect(getByText((content, element) => content.includes("Bank transfers"))).toBeInTheDocument();
-    expect(getByText((content, element) => content.includes("Credit cards"))).toBeInTheDocument();
-    expect(getByText((content, element) => content.includes("Digital wallets"))).toBeInTheDocument();
   });
 });

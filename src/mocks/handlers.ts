@@ -18,7 +18,7 @@ export const handlers = [
   // Get product detail
   rest.get(`${process.env.NEXT_PUBLIC_API_URL}products/:id`, (req, res, ctx) => {
     const { id } = req.params;
-
+  
     if (id === "1") {
       return res(
         ctx.status(200),
@@ -27,16 +27,16 @@ export const handlers = [
           message: "Product retrieved successfully",
           data: {
             id: 1,
-            name: "Test Product",
+            title: "Test Product",  // Ensure title matches test expectation
             description: "Test Description",
             price: 99.99,
-            category: "Test Category",
-            image: "test-image.jpg",
+            category: { id: "1", name: "Test Category" },
+            images: ["/test-image.jpg"], // Ensure correct field name
           },
         })
       );
     }
-
+  
     return res(
       ctx.status(404),
       ctx.json({
@@ -45,6 +45,7 @@ export const handlers = [
       })
     );
   }),
+  
 
   // Add to cart
   rest.post(`${process.env.NEXT_PUBLIC_API_URL}cart/add`, (req, res, ctx) => {

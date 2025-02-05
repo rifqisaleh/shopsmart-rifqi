@@ -5,6 +5,12 @@ import '@testing-library/jest-dom';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { handlers } from '@/mocks/handlers';
+import { useRouter } from 'next/router';
+
+// Mock Next.js useRouter
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 
 // Mock server setup
 const server = setupServer(...handlers);
@@ -14,12 +20,26 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 describe('ProductDetail Component', () => {
+  beforeEach(() => {
+    (useRouter as jest.Mock).mockReturnValue({
+      query: { id: '1' }, // Mock route parameters
+      push: jest.fn(),     // Mock push function
+      replace: jest.fn(),
+      pathname: '/product/1',
+      asPath: '/product/1',
+    });
+  });
+
   const mockProduct = {
     id: 1,
     title: 'Test Product',
     description: 'Test Description',
     price: 99.99,
-    images: ['/test-image.jpg'], // Updated to use a valid relative path
+    images: ['/test-image.jpg'],
+    category: {
+      id: '1',
+      name: 'Test Category',
+    },
   };
 
   const mockCartContext: CartContextProps = {

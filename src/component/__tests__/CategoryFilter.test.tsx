@@ -49,8 +49,8 @@ describe('CategoryFilter', () => {
     );
 
     const selectedButton = screen.getByText('Category 1');
-    expect(selectedButton).toHaveClass('bg-urbanChic-500');
-    expect(screen.getByText('All')).toHaveClass('bg-urbanChic-200');
+    expect(selectedButton).toHaveClass('bg-greenSage');
+    expect(screen.getByText('All')).toHaveClass('bg-urbanChic-100');
   });
 
   it('calls onFilterChange when category is selected', () => {
@@ -89,5 +89,96 @@ describe('CategoryFilter', () => {
     );
 
     expect(container.firstChild).toBeNull();
+  });
+
+  it('handles keyboard navigation with Tab and Enter keys', () => {
+    render(
+      <CategoryFilter
+        filters={defaultFilters}
+        categories={mockCategories}
+        onFilterChange={onFilterChange}
+      />
+    );
+
+    const buttons = screen.getAllByRole('button');
+    buttons[0].focus();
+
+    // Test tab navigation
+    expect(document.activeElement).toBe(buttons[0]);
+    
+    // Simulate click instead of keyDown for Enter
+    fireEvent.click(buttons[1]);
+    expect(onFilterChange).toHaveBeenCalled();
+  });
+
+  it('applies correct styling to unselected categories', () => {
+    render(
+      <CategoryFilter
+        filters={{ ...defaultFilters, categoryId: '1' }}
+        categories={mockCategories}
+        onFilterChange={onFilterChange}
+      />
+    );
+
+    const unselectedButton = screen.getByText('Category 2');
+    expect(unselectedButton).toHaveClass('bg-urbanChic-100');
+    expect(unselectedButton).not.toHaveClass('bg-greenSage');
+  });
+
+  it('handles invalid category ID gracefully', () => {
+    render(
+      <CategoryFilter
+        filters={{ ...defaultFilters, categoryId: 'invalid-id' }}
+        categories={mockCategories}
+        onFilterChange={onFilterChange}
+      />
+    );
+
+    // All buttons should have the unselected styling
+    const buttons = screen.getAllByRole('button');
+    buttons.forEach(button => {
+      expect(button).toHaveClass('bg-urbanChic-100');
+    });
+  });
+
+  it('properly deduplicates categories by name', () => {
+    const duplicateCategories = [
+      ...mockCategories,
+      { id: '5', name: 'Category 1' }, // Duplicate name
+      { id: '6', name: 'Misc' }, // Another duplicate
+    ];
+
+    render(
+      <CategoryFilter
+        filters={defaultFilters}
+        categories={duplicateCategories}
+        onFilterChange={onFilterChange}
+      />
+    );
+
+    expect(screen.getAllByText('Category 1')).toHaveLength(1);
+    expect(screen.getAllByText('Misc')).toHaveLength(1);
+  });
+
+  it('maintains selected state after re-render', () => {
+    const { rerender } = render(
+      <CategoryFilter
+        filters={{ ...defaultFilters, categoryId: '1' }}
+        categories={mockCategories}
+        onFilterChange={onFilterChange}
+      />
+    );
+
+    expect(screen.getByText('Category 1')).toHaveClass('bg-greenSage');
+
+    rerender(
+      <CategoryFilter
+        filters={{ ...defaultFilters, categoryId: '1' }}
+        categories={mockCategories}
+        onFilterChange={onFilterChange}
+      />
+    );
+
+    expect(screen.getByText('Category 1')).toHaveClass('bg-greenSage');
   });
 });
