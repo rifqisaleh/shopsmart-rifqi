@@ -65,21 +65,22 @@ const Header: React.FC = () => {
           ShopSmart
         </div>
 
-        {/* Middle: Search Bar - Visible on Desktop, Icon on Mobile */}
+      {/* Middle: Search Bar - Visible on Desktop, Icon on Mobile */}
         <div className="hidden sm:flex w-1/2">
-          <form onSubmit={handleSearch} className="flex border border-gray-400 rounded-xl overflow-hidden w-full">
+          <form onSubmit={handleSearch} className="flex border border-gray-400 rounded-xl overflow-hidden w-full bg-white">
             <input
               type="text"
-              className="w-full p-2 outline-none"
+              className="w-full p-2 outline-none bg-transparent"
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button type="submit" className="px-4">
+            <button type="submit" className="px-4 bg-transparent border-none outline-none flex items-center justify-center">
               🔍
             </button>
           </form>
         </div>
+
 
         {/* Right: Cart, User & Search Icons */}
         <div className="flex items-center space-x-6">

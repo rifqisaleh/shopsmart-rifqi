@@ -127,57 +127,77 @@ const LandingPage: React.FC = () => {
           <>
             {/* Hero Section with Large Background */}
             <div
-              className="w-full min-h-screen flex items-start px-6 py-16 mt-0"  // Changed items-center to items-start
-              style={{
-                backgroundImage: `url('/background.jpg')`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                height: "100vh", // Ensures full viewport height
-                width: "100vw", // Ensures full viewport width
-                margin: "0",
-                padding: "0",
-              }}
-            >
-              <div className="w-full max-w-7xl flex flex-col items-start justify-start text-white text-left p-10 pt-32 rounded-lg">  
-                <h1 className="text-6xl md:text-7xl font-bold drop-shadow-lg mb-8">  
-                  Welcome to ShopSmart !
+                className="w-full min-h-screen flex items-start px-6 py-16 mt-0"
+                style={{
+                  backgroundImage: "url('/background.jpg')",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                  minHeight: "100vh", // Keeps background stable
+                  width: "100vw",
+                  margin: "0",
+                  padding: "0",
+                  backgroundAttachment: "scroll", // Prevents background from moving when keyboard opens
+                }}
+              >
+                <div className="w-full max-w-7xl flex flex-col items-start justify-start text-urbanChic-600  text-left p-6 md:p-10 pt-24 md:pt-32">
+                <h1 className="text-4xl md:text-9xl font-bold drop-shadow-lg mb-4 md:mb-8">
+                  Welcome to ShopSmart!
                 </h1>
-                <p className="text-3xl mt-8 max-w-2xl drop-shadow-md">  
-                  Discover an incredible selection of amazing products spanning a wide variety of
-                  categories, carefully curated to meet your every need and desire.
+                <p className="text-lg md:text-3xl text-gray-600 mt-4 md:mt-8 max-w-full md:max-w-2xl drop-shadow-md">
+                  Discover an incredible selection of amazing products spanning a wide variety of categories, carefully curated to meet your every need and desire.
                 </p>
                 <button
                   onClick={() => router.push("/shop")}
-                  className="mt-12 bg-white text-gray-900 font-semibold text-lg px-6 py-3 rounded shadow-lg hover:bg-gray-200 transition"  // Changed mt-6 to mt-12
+                  className="mt-8 md:mt-12 bg-white text-gray-900 font-semibold text-lg px-4 md:px-6 py-2 md:py-3 rounded shadow-lg hover:bg-gray-200 transition"
                 >
                   Shop Now
                 </button>
               </div>
             </div>
 
-            {/* Featured Products Section */}
-            <div className="w-full max-w-7xl mt-16 mb-16">
-              <h2 className="text-5xl text-urbanChic-600 mb-16 text-center">
-                FEAUTURED PRODUCTS
-              </h2>
-              <Slider {...settings}>
-                {featuredProducts.map((product) => (
-                  <div
-                    key={product.id}
-                    className="p-4 cursor-pointer"
-                    onClick={() => router.push(`/product/${product.id}`)}
-                  >
-                    <img
-                      src={getFirstImage(product.images)}
-                      alt={product.title}
-                      className="w-full h-auto max-h-80 object-cover rounded mb-2 hover:opacity-90 transition-opacity"
-                    />
-                    <h2 className="text-xl font-semibold text-center">{product.title}</h2>
-                  </div>
-                ))}
-              </Slider>
+           
+              {/* Featured Products Section */}
+      <div className="w-full max-w-7xl mt-16 mb-16">
+        <h2 className="text-5xl text-urbanChic-600 mb-4 text-center">
+          FEATURED PRODUCTS
+        </h2>
+        <p className="text-lg text-gray-600 text-center mb-10">
+          Check out our featured product – handpicked just for you!
+        </p>
+
+        <Slider {...settings} slidesToShow={1}> {/* Show only 1 product at a time */}
+          {featuredProducts.map((product) => (
+            <div key={product.id} className="p-4">
+              <div
+                className="flex flex-col md:flex-row items-center bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer hover:shadow-xl transition"
+                onClick={() => router.push(`/product/${product.id}`)}
+              >
+                {/* Product Info (Left on Desktop, Above on Mobile) */}
+                <div className="w-full md:w-1/2 p-8 md:p-12 text-center md:text-left">
+                  <h2 className="text-3xl font-semibold text-gray-900">{product.title}</h2>
+                  <p className="text-lg text-gray-600 mt-4 leading-relaxed">
+                    {product.description
+                      ? product.description.substring(0, 150) + "..."
+                      : "Explore our latest high-quality products tailored just for you."}
+                  </p>
+                  <p className="text-xl font-bold text-urbanChic-600 mt-6">${product.price.toFixed(2)}</p>
+                </div>
+
+                {/* Product Image (Right on Desktop, Below on Mobile) */}
+                <div className="w-full md:w-1/2 flex justify-center">
+                  <img
+                    src={getFirstImage(product.images)}
+                    alt={product.title}
+                    className="w-full md:w-[450px] h-[300px] md:h-[500px] object-cover rounded-lg"
+                  />
+                </div>
+              </div>
             </div>
+          ))}
+        </Slider>
+      </div>
+
 
             {/* Shop by Category Section */}
             <div className="w-full max-w-7xl mt-16 mb-16">

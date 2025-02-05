@@ -103,7 +103,22 @@ const Dashboard: React.FC<DashboardProps> = ({ profile }) => {
         <title>Dashboard | ShopSmart</title>
         <meta name="description" content="Welcome to your dashboard at ShopSmart." />
       </Head>
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen"
+      style={{
+        backgroundImage: "url('/background.jpg')", // Ensure your image is in the public folder
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        minHeight: "100vh",
+        width: "100vw",
+        margin: "0",
+        padding: "0",
+        backgroundAttachment: "scroll", // Keeps background static when scrolling
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
         <div className="bg-urbanChic-50 shadow-lg rounded-lg p-8 w-full max-w-md">
           <h1 className="text-3xl text-center text-urbanChic-600">
             Welcome, {profile.name}!

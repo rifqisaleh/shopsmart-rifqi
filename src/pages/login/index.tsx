@@ -71,7 +71,22 @@ const Login = () => {
         <title>Login | ShopSmart</title>
         <meta name="description" content="Login to your ShopSmart account." />
       </Head>
-      <div className="flex items-center justify-center min-h-screen">
+      <div
+        className="flex items-center justify-center min-h-screen w-full min-h-screen px-6 py-16 mt-0"
+        style={{
+          backgroundImage: "url('/background.jpg')", // Ensure your image is in the public folder
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          minHeight: "100vh",
+          width: "100vw",
+          margin: "0",
+          padding: "0",
+          backgroundAttachment: "scroll", // Keeps background static when scrolling
+        }}
+      >
+        
+        {/* Login Card */}
         <div className="bg-urbanChic-100 shadow-lg rounded-xl p-8 w-full max-w-md">
           <h2 className="mt-6 text-3xl text-center text-black">Welcome Back!</h2>
           <p className="text-sm text-gray-600 text-center mt-2">Login to your account</p>

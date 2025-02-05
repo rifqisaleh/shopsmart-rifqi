@@ -174,7 +174,20 @@ const Register: React.FC = () => {
         <title>Register | ShopSmart</title>
         <meta name="description" content="Create a new account on ShopSmart." />
       </Head>
-      <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8"
+          style={{
+            backgroundImage: "url('/background.jpg')", // Ensure your image is in the public folder
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            minHeight: "100vh",
+            width: "100vw",
+            margin: "0",
+            padding: "0",
+            backgroundAttachment: "scroll", // Keeps background static when scrolling
+          }}>
+
+        {/* Register code */}
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-urbanChic-100 py-8 px-4 shadow sm:rounded-lg sm:px-10">
             <h1 className="mt-6 text-3xl text-center text-black mb-16">Welcome To ShopSmart!</h1>

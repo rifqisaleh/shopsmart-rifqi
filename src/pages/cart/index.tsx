@@ -31,76 +31,94 @@ const ShoppingCart: React.FC = () => {
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 mb-24 mt-24 rounded-lg shadow-lg bg-urbanChic-100">
-      <h1 className="text-4xl text-urbanChic-600 mb-16 text-center">Shopping Cart</h1>
-      {cart.length === 0 ? (
-        <p className="text-center text-gray-600 mb-16 mt-16">Your cart is empty.</p>
-      ) : (
-        <div className="space-y-4">
-          {cart.map((item, index) => (
-            <div
-              key={item.id}
-              className="flex items-center justify-between bg-white p-4 rounded-lg shadow"
-            >
-              {/* Item Number */}
-              <span className="text-lg font-bold">{index + 1}.</span>
-
-              {/* Product Image */}
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-16 h-16 rounded object-cover ml-10 mr-10"
-                onError={(e) => {
-                  e.currentTarget.src = "https://via.placeholder.com/150"; // Fallback image
-                }}
-              />
-
-              {/* Product Details */}
-              <div className="flex-1">
-                <p className="text-lg font-semibold">{item.title}</p>
-                <p className="text-gray-600">${item.price.toFixed(2)}</p>
-              </div>
-
-              {/* Quantity Input */}
-              <input
-                type="number"
-                className="w-9 border rounded-md mr-16 text-center"
-                min="1"
-                value={item.quantity}
-                onChange={(e) =>
-                  handleQuantityChange(item.id, parseInt(e.target.value, 10))
-                }
-              />
-
-              {/* Remove Button */}
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                onClick={() => handleRemoveItem(item.id)}
+    <div
+      style={{
+        backgroundImage: "url('/background.jpg')", // Ensure your image is in the public folder
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        minHeight: "100vh",
+        width: "100vw",
+        margin: "0",
+        padding: "0",
+        backgroundAttachment: "scroll", // Keeps background static when scrolling
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div className="max-w-4xl mx-auto p-6 mb-24 mt-24 rounded-lg shadow-lg bg-urbanChic-100 bg-opacity-90">
+        <h1 className="text-4xl text-urbanChic-600 mb-16 text-center">Shopping Cart</h1>
+        {cart.length === 0 ? (
+          <p className="text-center text-gray-600 mb-16 mt-16">Your cart is empty.</p>
+        ) : (
+          <div className="space-y-4">
+            {cart.map((item, index) => (
+              <div
+                key={item.id}
+                className="flex items-center justify-between bg-white p-4 rounded-lg shadow"
               >
-                Remove
-              </button>
+                {/* Item Number */}
+                <span className="text-lg font-bold">{index + 1}.</span>
+  
+                {/* Product Image */}
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-16 h-16 rounded object-cover ml-10 mr-10"
+                  onError={(e) => {
+                    e.currentTarget.src = "https://via.placeholder.com/150"; // Fallback image
+                  }}
+                />
+  
+                {/* Product Details */}
+                <div className="flex-1">
+                  <p className="text-lg font-semibold">{item.title}</p>
+                  <p className="text-gray-600">${item.price.toFixed(2)}</p>
+                </div>
+  
+                {/* Quantity Input */}
+                <input
+                  type="number"
+                  className="w-9 border rounded-md mr-16 text-center"
+                  min="1"
+                  value={item.quantity}
+                  onChange={(e) =>
+                    handleQuantityChange(item.id, parseInt(e.target.value, 10))
+                  }
+                />
+  
+                {/* Remove Button */}
+                <button
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  onClick={() => handleRemoveItem(item.id)}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            {/* Display the total */}
+            <div className="text-right text-xl font-bold">
+              Total: ${total.toFixed(2)}
             </div>
-          ))}
-          {/* Display the total */}
-          <div className="text-right text-xl font-bold">
-            Total: ${total.toFixed(2)}
-          </div>
-
-          {/* Checkout Button */}
+  
+            {/* Checkout Button */}
             {cart.length > 0 && (
               <div className="text-center mt-6">
                 <button
                   onClick={() => router.push("/checkout")}
-                    className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700"
-                    >
+                  className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700"
+                >
                   Proceed to Checkout
-                  </button>
-                </div>
-              )}
-        </div>
-      )}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
+  
 };
 
 export default ShoppingCart;

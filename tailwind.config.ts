@@ -23,41 +23,7 @@ module.exports = {
           800: '#1D2428',
           900: '#121718',
         },
-        peach: {
-          DEFAULT: '#fccfb2',
-          50: '#fff4eb',
-          100: '#ffe6d3',
-          200: '#ffd3b8',
-          300: '#ffbe9a',
-          400: '#ffab81',
-          500: '#fc9c69',
-          600: '#e6865a',
-          700: '#cc704b',
-          800: '#b35b3c',
-          900: '#8c4029',
-        },
-        warmBrown: {
-          DEFAULT: '#8e5447',
-          50: '#f6ebe9',
-          100: '#e9d3ce',
-          200: '#d9b5af',
-          300: '#c78e84',
-          400: '#b46a5f',
-          500: '#8e5447',
-          600: '#7d473b',
-          700: '#6b3d33',
-          800: '#5a332b',
-          900: '#462520',
-        },
-        champagne: {
-          DEFAULT: '#F7E7D1',
-        },
-        warmTaupe: {
-          DEFAULT: '#C0A896',
-        },
-        mutedTeal: {
-          DEFAULT: '#62929E',
-        },
+        customGray: '#e1e1e1', // Added your custom gray color
       },
       fontFamily: {
         philosopher: ['Philosopher', 'sans-serif'],

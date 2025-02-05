@@ -9,7 +9,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <Header />
 
       {/* Main Content */}
-      <main className="flex-grow bg-urbanChic-50">
+      <main className="flex-grow">
         {children}
       </main>
 
