@@ -44,7 +44,7 @@ const Header: React.FC = () => {
   return (
     <header className="w-full">
       {/* Top Bar - Shorter Height & Hidden on Mobile */}
-      <div className="hidden sm:flex bg-gray-900 text-white p-1.5 text-sm justify-end items-center">
+      <div className="hidden sm:flex bg-warmBrown-50 text-black p-1.5 text-sm justify-end items-center">
         <div className="space-x-6">
           <Link href="/aboutus" className="hover:underline">
             About Us
@@ -56,10 +56,10 @@ const Header: React.FC = () => {
       </div>
 
       {/* Bottom Navigation Bar */}
-      <nav className="bg-white shadow-md p-4 flex justify-between items-center relative">
+      <nav className="bg-champagne shadow-md p-4 flex justify-between items-center relative">
         {/* Left: Shop Name */}
         <div
-          className="text-xl font-bold cursor-pointer"
+          className="text-xl font-bold text-urbanChic-500 cursor-pointer"
           onClick={() => router.push("/")}
         >
           ShopSmart
@@ -67,7 +67,7 @@ const Header: React.FC = () => {
 
         {/* Middle: Search Bar - Visible on Desktop, Icon on Mobile */}
         <div className="hidden sm:flex w-1/2">
-          <form onSubmit={handleSearch} className="flex border border-gray-400 rounded-md overflow-hidden w-full">
+          <form onSubmit={handleSearch} className="flex border border-gray-400 rounded-xl overflow-hidden w-full">
             <input
               type="text"
               className="w-full p-2 outline-none"
@@ -75,7 +75,7 @@ const Header: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button type="submit" className="bg-gray-700 text-white px-4">
+            <button type="submit" className="px-4">
               🔍
             </button>
           </form>
@@ -108,7 +108,6 @@ const Header: React.FC = () => {
         </div>
       </nav>
 
-      {/* Mobile Search Bar (Appears below when search icon is clicked) */}
       {isSearchOpen && (
         <div className="sm:hidden fixed left-0 right-0 bg-white shadow-md p-2 z-50" style={{ top: '64px' }}>
           <form onSubmit={handleSearch} className="flex border border-gray-400 rounded-md overflow-hidden w-full">

@@ -141,9 +141,9 @@ const ProductList: React.FC = () => {
   });
 
   return (
-    <div className="flex flex-col lg:flex-row lg:space-x-4 p-4 mb-16 mt-16">
-      {/* Filters Section */}
-      <div className="lg:w-1/4 w-full space-y-6 mb-4 lg:mb-0">
+    <div className="container mx-auto p-4 mb-16 mt-16">
+      {/* Filters Section - Now full width above products */}
+      <div className="w-full mb-8 bg-white p-6 rounded-lg shadow-lg">
         <CategoryFilter
           filters={filters}
           categories={categories}
@@ -153,13 +153,13 @@ const ProductList: React.FC = () => {
         />
       </div>
 
-      {/* Products Section */}
-      <div className="lg:w-3/4 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {error && <p className="text-red-500">{error}</p>}
+      {/* Products Section - Full width grid */}
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {error && <p className="text-red-500 col-span-full">{error}</p>}
         {displayedProducts.length > 0 ? (
           displayedProducts.map((product) => <ProductCard key={product.id} product={product} />)
         ) : (
-          <p className="text-gray-500">No products found.</p>
+          <p className="text-gray-500 col-span-full">No products found.</p>
         )}
       </div>
     </div>

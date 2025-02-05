@@ -127,7 +127,7 @@ const LandingPage: React.FC = () => {
           <>
             {/* Hero Section with Large Background */}
             <div
-              className="w-full min-h-screen flex items-center px-6 py-16 mt-0"
+              className="w-full min-h-screen flex items-start px-6 py-16 mt-0"  // Changed items-center to items-start
               style={{
                 backgroundImage: `url('/background.jpg')`,
                 backgroundSize: "cover",
@@ -139,17 +139,17 @@ const LandingPage: React.FC = () => {
                 padding: "0",
               }}
             >
-              <div className="w-full max-w-7xl flex flex-col items-start justify-center text-white text-left p-10 bg-black/40 rounded-lg">
-                <h1 className="text-6xl md:text-7xl font-bold drop-shadow-lg">
-                  Welcome to ShopSmart!
+              <div className="w-full max-w-7xl flex flex-col items-start justify-start text-white text-left p-10 pt-32 rounded-lg">  
+                <h1 className="text-6xl md:text-7xl font-bold drop-shadow-lg mb-8">  
+                  Welcome to ShopSmart !
                 </h1>
-                <p className="text-xl mt-4 max-w-2xl drop-shadow-md">
+                <p className="text-3xl mt-8 max-w-2xl drop-shadow-md">  
                   Discover an incredible selection of amazing products spanning a wide variety of
                   categories, carefully curated to meet your every need and desire.
                 </p>
                 <button
                   onClick={() => router.push("/shop")}
-                  className="mt-6 bg-white text-gray-900 font-semibold text-lg px-6 py-3 rounded shadow-lg hover:bg-gray-200 transition"
+                  className="mt-12 bg-white text-gray-900 font-semibold text-lg px-6 py-3 rounded shadow-lg hover:bg-gray-200 transition"  // Changed mt-6 to mt-12
                 >
                   Shop Now
                 </button>
@@ -159,7 +159,7 @@ const LandingPage: React.FC = () => {
             {/* Featured Products Section */}
             <div className="w-full max-w-7xl mt-16 mb-16">
               <h2 className="text-5xl text-urbanChic-600 mb-16 text-center">
-                Featured Products
+                FEAUTURED PRODUCTS
               </h2>
               <Slider {...settings}>
                 {featuredProducts.map((product) => (
@@ -182,7 +182,7 @@ const LandingPage: React.FC = () => {
             {/* Shop by Category Section */}
             <div className="w-full max-w-7xl mt-16 mb-16">
               <h2 className="text-5xl text-urbanChic-600 mb-16 text-center">
-                Shop by Category
+                SHOP BY CATEGORY
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                 {categories.map((category) => (
