@@ -188,10 +188,10 @@ const Register: React.FC = () => {
           }}>
 
         {/* Register code */}
-        <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-urbanChic-100 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <h1 className="mt-6 text-3xl text-center text-black mb-16">Welcome To ShopSmart!</h1>
-            <h2 className="mt-4 text-2xl text-center text-black mb-16">Create your account</h2>
+        <div className="sm:mx-auto sm:w-full mt-16 mb-24 sm:max-w-md">
+          <div className="bg-white py-8 px-4 shadow mt-16 mb-16 sm:rounded-lg sm:px-10">
+            <h1 className="mt-6 text-3xl text-center text-black mb-8">Welcome To ShopSmart!</h1>
+            <h2 className="mt-4 text-2xl text-center text-black mb-8">Create your account</h2>
             {errors.general && <p className="text-center text-red-600">{errors.general}</p>}
             {successMessage && <p className="text-center text-green-600">{successMessage}</p>}
 
@@ -207,7 +207,7 @@ const Register: React.FC = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full border border-black rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-olive-500 sm:text-sm"
                 />
                 {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
               </div>
@@ -222,7 +222,7 @@ const Register: React.FC = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full border border-black rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-olive-500 sm:text-sm"
                 />
                 {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
               </div>
@@ -237,7 +237,7 @@ const Register: React.FC = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full border border-black rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-olive-500 sm:text-sm"
                 />
                 {errors.password && <p className="text-sm text-red-600">{errors.password}</p>}
               </div>
@@ -255,7 +255,7 @@ const Register: React.FC = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full border border-black rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-olive-500 sm:text-sm"
                 />
                 {errors.confirmPassword && (
                   <p className="text-sm text-red-600">{errors.confirmPassword}</p>
@@ -274,7 +274,7 @@ const Register: React.FC = () => {
                     value={formData.role}
                     onChange={handleChange}
                     required
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="mt-1 block w-full border border-black rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-olive-500 sm:text-sm"
                   >
                     <option value="" disabled>
                       Select a role
@@ -300,14 +300,14 @@ const Register: React.FC = () => {
                   value={formData.dob}
                   onChange={handleChange}
                   required
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full border border-black rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-olive-500 sm:text-sm"
                 />
                 {errors.dob && <p className="text-sm text-red-600">{errors.dob}</p>}
               </div>
               <button
                 type="submit"
                 disabled={loading || rolesLoading}
-                className={`w-full bg-urbanChic-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-urbanChic-900 focus:outline-none ${
+                className={`w-full bg-olive-50 text-black px-4 py-2 rounded-lg font-bold hover:bg-olive-400 focus:outline-none ${
                   loading || rolesLoading ? "bg-gray-400" : ""
                 }`}
               >

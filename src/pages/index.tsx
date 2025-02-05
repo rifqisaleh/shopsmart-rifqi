@@ -146,7 +146,7 @@ const LandingPage: React.FC = () => {
                 </p>
                 <button
                   onClick={() => router.push("/shop")}
-                  className="mt-8 md:mt-12 bg-white text-gray-900 font-semibold text-lg px-4 md:px-6 py-2 md:py-3 rounded shadow-lg hover:bg-gray-200 transition"
+                  className="border border-black mt-8 md:mt-12 bg-white text-gray-900 font-semibold text-lg px-4 md:px-6 py-2 md:py-3 rounded shadow-lg hover:bg-gray-200 transition"
                 >
                   Shop Now
                 </button>
@@ -155,8 +155,8 @@ const LandingPage: React.FC = () => {
 
            
               {/* Featured Products Section */}
-      <div className="w-full max-w-7xl mt-2 md:mt-10 mb-10">
-        <h2 className="text-4xl text-urbanChic-700 mb-4 text-center md:text-7xl">
+      <div className="w-full max-w-7xl mt-2 md:mt-24 mb-10">
+        <h2 className="text-4xl text-urbanChic-700 mb-4 mt-12 text-center md:text-6xl">
           FEATURED PRODUCTS
         </h2>
         <p className="text-lg text-gray-600 text-center mb-10">
@@ -167,7 +167,7 @@ const LandingPage: React.FC = () => {
         {featuredProducts.map((product) => (
           <div key={product.id} className="p-4 flex justify-center">
             <div
-              className="flex flex-col md:flex-row items-center bg-white shadow-lg rounded-3xl overflow-hidden cursor-pointer hover:shadow-xl transition md:gap-12 md:max-w-[1500px] w-full md:p-16"
+              className="flex flex-col bg-olive-50 md:flex-row items-center bg-white shadow-lg rounded-3xl overflow-hidden cursor-pointer hover:shadow-xl transition md:gap-12 md:max-w-[1500px] w-full md:p-16"
               onClick={() => router.push(`/product/${product.id}`)}
             >
               {/* Product Image (Always on the Left) */}
@@ -200,7 +200,7 @@ const LandingPage: React.FC = () => {
 
             {/* Shop by Category Section */}
             <div className="w-full max-w-7xl mt-16 mb-16">
-              <h2 className="text-5xl text-urbanChic-700 mb-16 text-center">
+              <h2 className="text-4xl text-urbanChic-700 mt-24 mb-24 text-center md:text-6xl">
                 SHOP BY CATEGORY
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">

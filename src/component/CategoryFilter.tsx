@@ -16,8 +16,8 @@ interface CategoryFilterProps {
 }
 
 const getButtonStyleClass = (isSelected: boolean) => 
-  `px-4 py-2 rounded-md font-medium transition-all duration-200 text-sm ${
-    isSelected ? "bg-urbanChic-500 text-white shadow-md" : "bg-urbanChic-100 text-gray-700 hover:bg-urbanChic-300"
+  `border border-black px-4 py-2 rounded-md font-medium transition-all duration-200 text-sm ${
+    isSelected ? "bg-greenSage text-white shadow-md" : "bg-urbanChic-100 text-black hover:bg-olive-300"
   }`;
 
 const CategoryFilter: React.FC<CategoryFilterProps> = React.memo(({ filters, categories, onFilterChange }) => {

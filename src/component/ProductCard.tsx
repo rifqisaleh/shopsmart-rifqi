@@ -52,7 +52,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
       {/* Add to Cart Button */}
       <button
         onClick={handleAddToCart}
-        className="bg-urbanChic-500 text-white px-3 py-1.5 rounded text-sm mt-2 font-medium hover:bg-urbanChic-900 focus:outline-none"
+        className="bg-greenSage text-white px-3 py-1.5 rounded text-sm mt-2 font-medium hover:bg-olive-600 focus:outline-none"
       >
         Add to Cart
       </button>

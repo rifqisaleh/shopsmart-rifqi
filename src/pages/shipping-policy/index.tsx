@@ -18,7 +18,7 @@ const ShippingPolicy: React.FC = () => {
         justifyContent: "center",
       }}
     >
-      <div className="max-w-4xl mx-auto my-24 p-6 bg-urbanChic-100 bg-opacity-90 rounded-lg shadow-lg">
+      <div className="max-w-4xl mx-auto my-24 p-6 bg-white rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold mb-4 text-center">Terms & Conditions</h1>
         <div className="space-y-4">
           <section>

@@ -1,10 +1,9 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx}', // Include all pages within src
-    './src/component/**/*.{js,ts,jsx,tsx}', // Include all components within src
-    './src/app/**/*.{js,ts,jsx,tsx}', // Include app directory (if using app router)
-    './src/context/**/*.{js,ts,jsx,tsx}', // Include other directories
+    './src/pages/**/*.{js,ts,jsx,tsx}',
+    './src/component/**/*.{js,ts,jsx,tsx}',
+    './src/app/**/*.{js,ts,jsx,tsx}',
+    './src/context/**/*.{js,ts,jsx,tsx}',
     './src/config/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
@@ -23,8 +22,21 @@ module.exports = {
           800: '#1D2428',
           900: '#121718',
         },
-        customGray: '#e1e1e1', // Previously added custom gray
-        softOlive: '#bbbca7', // New color added
+        customGray: '#e1e1e1', // Custom gray
+        softOlive: '#bbbca7', // Previously added
+        olive: {
+          DEFAULT: '#808000', // Standard olive color
+          50: '#F2F2E6',
+          100: '#E5E5CC',
+          200: '#CCCC99',
+          300: '#B2B266',
+          400: '#999933',
+          500: '#808000', // Main Olive
+          600: '#666600',
+          700: '#4D4D00',
+          800: '#333300',
+          900: '#1A1A00',
+        },
         greenSage: '#B2AC88',
       },
       fontFamily: {

@@ -114,7 +114,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
           <div className="mt-2 mb-4 flex items-center space-x-2">
             {averageRating > 0 ? (
               <>
-                <span className="bg-gray-100 p-2 rounded-lg shadow-sm text-yellow-500 text-xl inline-block">
+                <span className="text-yellow-500 text-xl inline-block mt-2 mb-2">
                   {"⭐".repeat(roundedRating)}
                 </span>
                 <span className="text-gray-700 text-sm">({fakeReviews.length} reviews)</span>
@@ -127,7 +127,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
           {/* Product Category */}
           {product.category?.name && (
             <div className="mt-4 mb-6 flex justify-start">
-              <span className="bg-gray-200 text-gray-700 text-sm font-medium px-3 py-1 rounded-full">
+              <span className="bg-gray-300 text-black text-sm font-medium px-3 py-1 rounded-full">
                 {product.category.name}
               </span>
             </div>
@@ -143,14 +143,14 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
           {/* Buttons: Add to Cart & Buy Now */}
           <div className="flex space-x-4">
             <button
-              className="flex-1 border border-black text-black px-6 py-3 rounded-md w-xl font-medium hover:bg-gray-100 transition focus:outline-none"
+              className="flex-1 border border-black text-black px-6 py-3 rounded-md w-xl font-medium hover:bg-olive-50 transition focus:outline-none"
               onClick={handleAddToCart}
             >
               Add to Cart
             </button>
 
             <button
-              className="flex-1 bg-black text-white px-6 py-3 w-xl rounded-md font-medium hover:bg-gray-800 transition focus:outline-none"
+              className="flex-1 bg-olive-700 text-white px-6 py-3 w-xl rounded-md font-medium hover:bg-olive-800 transition focus:outline-none"
               onClick={handleBuyNow}
             >
               Buy Now
@@ -160,7 +160,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
       </div>
 
       {/* "You May Also Like" Section */}
-      <div className="mt-96 mb-1">
+      <div className="mt-32 mb-1">
         <h2 className="text-4xl text-center font-semibold mb-6">You May Also Like</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {relatedProducts.length > 0 ? (

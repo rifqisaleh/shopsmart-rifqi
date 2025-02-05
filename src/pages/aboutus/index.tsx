@@ -20,7 +20,7 @@ const AboutUs = () => {
       }}
     >
       {/* Content Container */}
-      <div className="container mx-auto p-6 bg-urbanChic-100 bg-opacity-90 rounded-lg shadow-lg max-w-4xl">
+      <div className="mt-24 mb-24 container mx-auto p-6 bg-white bg-opacity-90 rounded-lg shadow-lg max-w-4xl">
         <h1 className="text-3xl font-bold mb-4 text-center">About Us</h1>
         <p className="mb-4">
           Welcome to <strong>ShopSmart</strong>, your go-to online store for a seamless shopping experience. We believe in making online shopping smarter, easier, and more enjoyable for everyone. Whether you're looking for the latest products, exclusive deals, or a hassle-free checkout process, ShopSmart is here to provide it all.
