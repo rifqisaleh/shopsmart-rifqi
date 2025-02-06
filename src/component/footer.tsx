@@ -2,33 +2,61 @@ import React from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faTwitter, faInstagram, faLinkedin } from "@fortawesome/free-brands-svg-icons";
-
+import { useState } from "react";
 const Footer: React.FC = () => {
-  console.log("Rendering Footer...");
+
+
+  const [newsletterStatus, setNewsletterStatus] = useState('idle');
+  const [email, setEmail] = useState('');
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent page refresh
+    
+    try {
+      // Add your newsletter signup logic here
+      // For example: await axios.post('/api/newsletter', { email });
+      setNewsletterStatus('success');
+      setEmail('');
+      setTimeout(() => setNewsletterStatus('idle'), 3000); // Reset after 3s
+    } catch (error) {
+      setNewsletterStatus('error');
+      setTimeout(() => setNewsletterStatus('idle'), 3000);
+    }
+  };
+
   return (
     <footer className="bg-softOlive text-white py-12">
-      <section className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-12">
-        {/* Newsletter Subscription Section */}
-        <div>
-          <h3 className="text-lg font-bold text-black mb-4">Subscribe to Our Newsletter</h3>
-          <p className="text-white mb-4">
-            Stay updated with our latest offers and products!
-          </p>
-          <form className="flex flex-col space-y-2">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="px-4 py-2 rounded-md text-gray-800"
-            />
-            <button
-              type="submit"
-              className="bg-olive-50 text-black font-bold px-4 py-2 rounded-md hover:bg-olive-500 transition-colors"
-            >
-              Subscribe
-            </button>
-          </form>
-        </div>
-
+        <section className="max-w-7xl mx-auto px-8 grid grid-cols-1 sm:grid-cols-3 gap-16 md:gap-24">
+          {/* Newsletter Subscription Section */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-black">Subscribe to Our Newsletter</h3>
+            <p className="text-white">
+              Stay updated with our latest offers and products!
+            </p>
+            <form onSubmit={handleNewsletterSubmit} className="flex flex-col items-start gap-4">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="w-full px-4 py-2 text-black border rounded-lg"
+                required
+              />
+              <button 
+                type="submit"
+                className="w-full sm:w-auto px-6 py-2 bg-urbanChic-600 text-white rounded hover:bg-urbanChic-700"
+              >
+                Subscribe
+              </button>
+              {newsletterStatus === 'success' && (
+                <p className="text-green-600">Thank you for subscribing!</p>
+              )}
+              {newsletterStatus === 'error' && (
+                <p className="text-red-600">Something went wrong. Please try again.</p>
+              )}
+            </form>
+          </div>
+        
         {/* Quick Links Section */}
         <div>
           <h3 className="text-lg text-black font-bold mb-4">Quick Links</h3>

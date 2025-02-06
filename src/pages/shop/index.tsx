@@ -154,7 +154,7 @@ const ProductList: React.FC = () => {
 
         {/* Category Filter */}
         <aside className="lg:w-64 order-first lg:order-last">
-          <div className="fixed-wrapper lg:sticky lg:top-0 h-screen lg:h-auto pt-4">
+          <div className="fixed-wrapper lg:top-0 h-screen lg:h-auto pt-4">
             <CategoryFilter
               filters={filters}
               categories={categories}

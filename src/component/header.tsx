@@ -65,7 +65,7 @@ const Header: React.FC = () => {
           ShopSmart
         </div>
 
-      {/* Middle: Search Bar - Visible on Desktop, Icon on Mobile */}
+      {/* Middle: Search Bar*/}
         <div className="hidden sm:flex w-1/2">
           <form onSubmit={handleSearch} className="flex border border-black rounded-xl overflow-hidden w-full bg-white">
             <input
@@ -75,8 +75,8 @@ const Header: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button type="submit" className="px-4 bg-transparent border-none outline-none flex items-center justify-center">
-              🔍
+            <button type="submit" className="px-4 bg-transparent border-none outline-none text-black flex items-center justify-center">
+            <FiSearch />
             </button>
           </form>
         </div>
@@ -84,8 +84,7 @@ const Header: React.FC = () => {
 
         {/* Right: Cart, User & Search Icons */}
         <div className="flex items-center space-x-6">
-          {/* Search Icon (Mobile Only) */}
-          <button
+         <button
             className="sm:hidden text-2xl"
             onClick={() => setIsSearchOpen(!isSearchOpen)}
           >
@@ -110,7 +109,7 @@ const Header: React.FC = () => {
       </nav>
 
       {isSearchOpen && (
-        <div className="sm:hidden fixed left-0 right-0 bg-white shadow-md p-2 z-50" style={{ top: '64px' }}>
+        <div className="sm:hidden fixed left-0 right-0 shadow-md p-2 z-50" style={{ top: '64px' }}>
           <form onSubmit={handleSearch} className="flex border border-gray-400 rounded-md overflow-hidden w-full">
             <input
               type="text"
@@ -120,8 +119,8 @@ const Header: React.FC = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               autoFocus
             />
-            <button type="submit" className="bg-gray-700 text-white px-4">
-              🔍
+            <button type="submit" className="text-black px-4">
+            <FiSearch />
             </button>
           </form>
         </div>
