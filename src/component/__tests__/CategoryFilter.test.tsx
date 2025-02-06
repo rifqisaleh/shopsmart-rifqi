@@ -9,10 +9,12 @@ const mockCategories = [
   { id: '4', name: 'Misc' }, // Duplicate Misc for testing deduplication
 ];
 
-const defaultFilters: { categoryId: string | null; searchQuery: string; priceRange: [number, number] } = {
+const defaultFilters = {
   categoryId: null,
   searchQuery: '',
-  priceRange: [0, 1000],
+  priceRange: [0, 1000] as [number, number],
+  sortBy: 'name' as 'name' | 'price' | 'recent',
+  sortOrder: 'asc' as 'asc' | 'desc'
 };
 
 describe('CategoryFilter', () => {
@@ -138,6 +140,7 @@ describe('CategoryFilter', () => {
     const buttons = screen.getAllByRole('button');
     buttons.forEach(button => {
       expect(button).toHaveClass('bg-urbanChic-100');
+      expect(button).not.toHaveClass('bg-greenSage');
     });
   });
 
@@ -182,3 +185,4 @@ describe('CategoryFilter', () => {
     expect(screen.getByText('Category 1')).toHaveClass('bg-greenSage');
   });
 });
+

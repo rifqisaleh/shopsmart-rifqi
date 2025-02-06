@@ -8,7 +8,7 @@ interface AuthContextProps {
   fetchWithAuth: (url: string, options?: RequestInit) => Promise<Response>;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 const isTokenValid = (token: string): boolean => {
   try {

@@ -1,10 +1,11 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { CartContext, CartContextProps } from '@/context/CartContext';
+import { AuthContext } from '@/context/AuthContext';  // Add this import
 import ProductDetail from '@/pages/product/[id]';
 import '@testing-library/jest-dom';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { handlers } from '@/mocks/handlers';
+import { handlers as mockHandlers } from '@/mocks/handlers';
 import { useRouter } from 'next/router';
 
 // Mock Next.js useRouter
@@ -12,8 +13,31 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
+// Add base URL for tests
+process.env.NEXT_PUBLIC_API_URL = 'http://localhost:3000/';
+
+// Add mock handler for related products
+const handlers = [
+  // ...existing handlers...
+  rest.get('*/products', (req, res, ctx) => {
+    return res(
+      ctx.json({
+        data: [
+          {
+            id: 2,
+            title: 'Related Product',
+            price: 49.99,
+            images: ['/related-image.jpg'],
+            category: { id: '1', name: 'Test Category' }
+          }
+        ]
+      })
+    );
+  }),
+];
+
 // Mock server setup
-const server = setupServer(...handlers);
+const server = setupServer(...mockHandlers);
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
@@ -49,11 +73,24 @@ describe('ProductDetail Component', () => {
     updateCart: jest.fn(),
   };
 
+  const mockAuthContext = {  // Add mock auth context
+    user: null,
+    login: jest.fn(),
+    logout: jest.fn(),
+    isAuthenticated: false,
+    isLoading: false,
+    fetchWithAuth: jest.fn().mockImplementation((url) => 
+      fetch(url).then(res => res.json())
+    ),
+  };
+
   it('renders product details correctly', async () => {
     render(
-      <CartContext.Provider value={mockCartContext}>
-        <ProductDetail product={mockProduct} />
-      </CartContext.Provider>
+      <AuthContext.Provider value={mockAuthContext}>
+        <CartContext.Provider value={mockCartContext}>
+          <ProductDetail product={mockProduct} />
+        </CartContext.Provider>
+      </AuthContext.Provider>
     );
 
     expect(screen.getByText(mockProduct.title)).toBeInTheDocument();
@@ -64,9 +101,11 @@ describe('ProductDetail Component', () => {
 
   it('handles adding a product to the cart', async () => {
     render(
-      <CartContext.Provider value={mockCartContext}>
-        <ProductDetail product={mockProduct} />
-      </CartContext.Provider>
+      <AuthContext.Provider value={mockAuthContext}>
+        <CartContext.Provider value={mockCartContext}>
+          <ProductDetail product={mockProduct} />
+        </CartContext.Provider>
+      </AuthContext.Provider>
     );
 
     const addToCartButton = screen.getByRole('button', { name: /add to cart/i });
@@ -81,7 +120,11 @@ describe('ProductDetail Component', () => {
   });
 
   it('renders fallback UI when product is not found', () => {
-    render(<ProductDetail product={undefined} />);
+    render(
+      <AuthContext.Provider value={mockAuthContext}>
+        <ProductDetail product={undefined} />
+      </AuthContext.Provider>
+    );
 
     expect(screen.getByText(/product not found!/i)).toBeInTheDocument();
   });
