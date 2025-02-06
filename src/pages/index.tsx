@@ -100,7 +100,7 @@ const LandingPage: React.FC = () => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 3, // Show more images
+    slidesToShow: 1, // Show more images
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,

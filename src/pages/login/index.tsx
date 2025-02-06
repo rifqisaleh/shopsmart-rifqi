@@ -87,7 +87,7 @@ const Login = () => {
       >
         
         {/* Login Card */}
-        <div className="bg-urbanChic-100 shadow-lg rounded-xl p-8 w-full max-w-md">
+        <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
           <h2 className="mt-6 text-3xl text-center text-black">Welcome Back!</h2>
           <p className="text-sm text-gray-600 text-center mt-2">Login to your account</p>
 
@@ -125,16 +125,17 @@ const Login = () => {
             </div>
 
             <button
-              type="submit"
-              disabled={loading}
-              className={`w-full px-4 py-2 rounded-lg font-medium focus:outline-none ${
-                loading
-                  ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                  : "bg-urbanChic-500 text-white hover:bg-urbanChic-900"
-              }`}
-            >
-              {loading ? "Logging in..." : "Login"}
-            </button>
+            type="submit"
+            disabled={loading}
+            className={`w-full px-4 py-2 rounded-lg text-black focus:outline-none ${
+              loading
+                ? "bg-olive-50 text-gray-600 cursor-not-allowed"
+                : "bg-olive-50 hover:bg-olive-200"
+            }`}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-4">

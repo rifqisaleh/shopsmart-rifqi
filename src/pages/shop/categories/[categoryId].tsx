@@ -1,12 +1,13 @@
 import { useRouter } from "next/router";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import ProductCard from "@/component/ProductCard";
-import CategoryFilter from "@/component/CategoryFilter";
 import { Product, categoryMap } from "..";
+import ProductLayout from "@/component/ProductLayout";
 
 const initialFilters = {
   searchQuery: "",
   priceRange: [0, 500] as [number, number],
+  sortBy: "name" as "name" | "price" | "recent",
+  sortOrder: "asc" as "asc" | "desc"
 };
 
 const CategoryPage: React.FC = () => {
@@ -18,6 +19,7 @@ const CategoryPage: React.FC = () => {
   const [filters, setFilters] = useState(() => ({
     ...initialFilters,
     searchQuery: search ? String(search) : "",
+    categoryId: categoryId ? String(categoryId) : null,
   }));
 
   const [error, setError] = useState<string | null>(null);
@@ -35,16 +37,18 @@ const CategoryPage: React.FC = () => {
         const resCategories = await fetch(`${process.env.NEXT_PUBLIC_API_URL}categories`);
         if (!resCategories.ok) throw new Error("Failed to fetch categories");
 
-        const productData: Product[] = await resProducts.json();
+        const productData = await resProducts.json();
         const categoryData: { id: string; name: string }[] = await resCategories.json();
 
-        const standardizedProducts = productData.map((product) => ({
+        const standardizedProducts: Product[] = productData.map((product: any) => ({
           ...product,
+          id: Number(product.id), // Convert id to number
           category: {
             id: product.category?.id || "5",
             name: categoryMap[product.category?.id || "5"],
           },
           images: Array.isArray(product.images) ? product.images : [],
+          createdAt: product.createdAt || new Date().toISOString()
         }));
 
         setProducts(standardizedProducts);
@@ -75,14 +79,14 @@ const CategoryPage: React.FC = () => {
 
   const handleFilterChange = useCallback(
     (updatedFilters: Partial<typeof filters>) => {
+      console.log('Updating filters:', updatedFilters); // Add this for debugging
       setFilters((prev) => ({ ...prev, ...updatedFilters }));
     },
     []
   );
 
   const displayedProducts = useMemo(() => {
-    return products.filter((product) => {
-      // Convert both IDs to strings and compare
+    let filtered = products.filter((product) => {
       const productCategoryId = String(product.category?.id);
       const currentCategoryId = String(categoryId);
       
@@ -92,41 +96,47 @@ const CategoryPage: React.FC = () => {
       const withinPriceRange =
         product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1];
 
-      console.log('Product Category:', productCategoryId, 'Current Category:', currentCategoryId, 'Matches:', matchesCategory);
-
-      return matchesCategory && matchesSearchQuery && withinPriceRange;
+      return matchesCategory && withinPriceRange && matchesSearchQuery;
     });
+
+    // Sort products
+    filtered.sort((a, b) => {
+      switch (filters.sortBy) {
+        case "name":
+          return filters.sortOrder === "asc" 
+            ? a.title.localeCompare(b.title)
+            : b.title.localeCompare(a.title);
+        case "price":
+          return filters.sortOrder === "asc" 
+            ? a.price - b.price
+            : b.price - a.price;
+        case "recent":
+          return filters.sortOrder === "asc"
+            ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
   }, [products, filters, categoryId]);
 
   const categoryFilterProps = useMemo(() => ({
-    filters: {
-      categoryId: categoryId ? String(categoryId) : null,
-      ...filters,
-    },
+    filters: filters,  // Pass the entire filters object
     categories: processedCategories,
     onFilterChange: handleFilterChange,
-  }), [categoryId, filters, processedCategories, handleFilterChange]);
-
-  if (loading) return <p className="text-center text-gray-500">Loading products...</p>;
+  }), [filters, processedCategories, handleFilterChange]);
 
   return (
-    <div className="flex flex-col lg:flex-row lg:space-x-4 p-4 mb-16 mt-16">
-      {processedCategories.length > 0 && (
-        <div className="lg:w-1/4 w-full space-y-6 mb-4 lg:mb-0">
-          <CategoryFilter {...categoryFilterProps} />
-        </div>
-      )}
-
-      <div className="lg:w-3/4 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {error && <p className="text-red-500">{error}</p>}
-
-        {displayedProducts.length > 0 ? (
-          displayedProducts.map((product) => <ProductCard key={product.id} product={product} />)
-        ) : (
-          <p className="text-gray-500">No products found.</p>
-        )}
-      </div>
-    </div>
+    <ProductLayout
+      loading={loading}
+      products={displayedProducts}
+      categories={processedCategories}
+      filters={categoryFilterProps.filters}
+      onFilterChange={handleFilterChange}
+      error={error}
+    />
   );
 };
 

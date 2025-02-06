@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import ProductCard from "@/component/ProductCard";
 import CategoryFilter from "@/component/CategoryFilter";
+import ProductLayout from "@/component/ProductLayout";
 
 export interface Product {
   id: number;
@@ -13,6 +14,7 @@ export interface Product {
     id: string;
     name: string;
   };
+  createdAt: string; // Add this field for sorting by recent
 }
 
 // Static category map
@@ -34,10 +36,14 @@ const ProductList: React.FC = () => {
     categoryId: string | null;
     searchQuery: string;
     priceRange: [number, number];
+    sortBy: "name" | "price" | "recent";
+    sortOrder: "asc" | "desc";
   }>({
     categoryId: null,
     searchQuery: search ? String(search) : "",
     priceRange: [0, 500],
+    sortBy: "name" as "name" | "price" | "recent",
+    sortOrder: "asc" as "asc" | "desc",
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -130,42 +136,45 @@ const ProductList: React.FC = () => {
   }, [search]);
   
   // Filter products based on search query and price range
-  const displayedProducts = products.filter((product) => {
-    const matchesSearchQuery = product.title
-      .toLowerCase()
-      .includes(filters.searchQuery.toLowerCase());
-    const withinPriceRange =
-      product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1];
+  const displayedProducts = products
+    .filter((product) => {
+      const matchesSearchQuery = product.title
+        .toLowerCase()
+        .includes(filters.searchQuery.toLowerCase());
+      const withinPriceRange =
+        product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1];
 
-    return matchesSearchQuery && withinPriceRange;
-  });
+      return matchesSearchQuery && withinPriceRange;
+    })
+    .sort((a, b) => {
+      switch (filters.sortBy) {
+        case "name":
+          return filters.sortOrder === "asc" 
+            ? a.title.localeCompare(b.title)
+            : b.title.localeCompare(a.title);
+        case "price":
+          return filters.sortOrder === "asc" 
+            ? a.price - b.price
+            : b.price - a.price;
+        case "recent":
+          return filters.sortOrder === "asc"
+            ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        default:
+          return 0;
+      }
+    });
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Product Grid */}
-        <main className="lg:w-3/4 flex-grow">
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-            {displayedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </main>
-
-        {/* Category Filter */}
-        <aside className="lg:w-64 order-first lg:order-last">
-          <div className="fixed-wrapper lg:top-0 h-screen lg:h-auto pt-4">
-            <CategoryFilter
-              filters={filters}
-              categories={categories}
-              onFilterChange={(updatedFilters) =>
-                setFilters((prev) => ({ ...prev, ...updatedFilters }))
-              }
-            />
-          </div>
-        </aside>
-      </div>
-    </div>
+    <ProductLayout
+      products={displayedProducts}
+      categories={categories}
+      filters={filters}
+      onFilterChange={(updatedFilters) =>
+        setFilters((prev) => ({ ...prev, ...updatedFilters }))
+      }
+      error={error}
+    />
   );
 };
 

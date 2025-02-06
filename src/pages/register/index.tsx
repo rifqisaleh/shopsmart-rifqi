@@ -307,7 +307,7 @@ const Register: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading || rolesLoading}
-                className={`w-full bg-olive-50 text-black px-4 py-2 rounded-lg font-bold hover:bg-olive-400 focus:outline-none ${
+                className={`w-full bg-olive-50 text-black px-4 py-2 rounded-lg font-bold hover:bg-olive-200 focus:outline-none ${
                   loading || rolesLoading ? "bg-gray-400" : ""
                 }`}
               >

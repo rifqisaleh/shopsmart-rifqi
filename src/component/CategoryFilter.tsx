@@ -10,6 +10,8 @@ interface CategoryFilterProps {
     categoryId: string | null;
     searchQuery: string;
     priceRange: [number, number];
+    sortBy: "name" | "price" | "recent";
+    sortOrder: "asc" | "desc";
   };
   categories: Category[];
   onFilterChange: (updatedFilters: Partial<CategoryFilterProps["filters"]>) => void;
@@ -36,6 +38,24 @@ const CategoryFilter: React.FC<CategoryFilterProps> = React.memo(({ filters, cat
     }
   }, [onFilterChange, filters.priceRange]);
 
+  const handleSortChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    onFilterChange({ sortBy: event.target.value as "name" | "price" | "recent" });
+  }, [onFilterChange]);
+
+  const handleSortOrderChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    onFilterChange({ sortOrder: event.target.value as "asc" | "desc" });
+  }, [onFilterChange]);
+
+  const handleClearFilters = useCallback(() => {
+    onFilterChange({
+      categoryId: null,
+      searchQuery: "",
+      priceRange: [0, 500],
+      sortBy: "name",
+      sortOrder: "asc"
+    });
+  }, [onFilterChange]);
+
   const uniqueCategories = useMemo(() => {
     if (!categories?.length) return [];
     
@@ -51,7 +71,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = React.memo(({ filters, cat
   if (!uniqueCategories.length) return null;
 
   return (
-    <div className="border border-black bg-white rounded-md shadow-md p-4 w-64 overflow-y-auto max-h-[calc(100vh-8rem)] mx-auto sm:mx-0 mb-2">
+    <div className="border border-black bg-white rounded-md shadow-md p-4 overflow-y-auto max-h-[calc(100vh-8rem)] w-full">
       {/* Category Filter */}
       <div>
         <h3 className=" text-lg font-semibold text-gray-800 mb-3">Categories</h3>
@@ -105,13 +125,45 @@ const CategoryFilter: React.FC<CategoryFilterProps> = React.memo(({ filters, cat
           </div>
         </div>
       </div>
+
+      {/* Sort Controls */}
+      <div className="mt-5">
+        <h3 className="text-lg font-semibold text-gray-800 mb-3">Sort By</h3>
+        <div className="flex flex-col gap-2">
+          <select
+            value={filters.sortBy}
+            onChange={handleSortChange}
+            className="w-full p-2 border rounded-md text-sm bg-white cursor-pointer z-10 relative"
+          >
+            <option value="name">Name</option>
+            <option value="price">Price</option>
+            <option value="recent">Most Recent</option>
+          </select>
+          <select
+            value={filters.sortOrder}
+            onChange={handleSortOrderChange}
+            className="w-full p-2 border rounded-md text-sm bg-white cursor-pointer z-10 relative"
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Clear Filters Button */}
+      <div className="mt-5">
+        <button
+          onClick={handleClearFilters}
+          className="w-full bg-olive-50 text-black px-4 py-2 rounded-lg font-bold hover:bg-olive-200 focus:outline-none"
+        >
+          Clear Filters
+        </button>
+      </div>
     </div>
   );
 }, (prevProps, nextProps) => {
-  return prevProps.filters.categoryId === nextProps.filters.categoryId &&
-         prevProps.categories.length === nextProps.categories.length &&
-         prevProps.filters.priceRange[0] === nextProps.filters.priceRange[0] &&
-         prevProps.filters.priceRange[1] === nextProps.filters.priceRange[1];
+  return JSON.stringify(prevProps.filters) === JSON.stringify(nextProps.filters) &&
+         prevProps.categories.length === nextProps.categories.length;
 });
 
 export default CategoryFilter;
