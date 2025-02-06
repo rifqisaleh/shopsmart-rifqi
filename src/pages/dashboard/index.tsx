@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext"; // Adjust path as needed
 import Head from "next/head";
 import { GetServerSideProps } from "next";
-import { parseCookies } from 'nookies';
+import { parseCookies, destroyCookie } from "nookies";
 import { useRouter } from "next/router";
+import { WishlistItem, getWishlist, removeFromWishlist } from "@/utility/wishlistHelper";
 
 interface UserProfile {
   id: number;
@@ -11,6 +12,7 @@ interface UserProfile {
   email: string;
   avatar?: string; // Optional if not always returned
   role: string;
+  dob?: string; // Add DOB property
 }
 
 interface DashboardProps {
@@ -20,22 +22,28 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ profile }) => {
   const { logout } = useAuth();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isLoading, setIsLoading] = useState(false);
+  const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
 
   useEffect(() => {
-    if (!profile) {
-      console.log("No profile received in props. Redirecting to login...");
-      router.push("/login");
-    } else {
-      console.log("Profile loaded:", profile);
+    if (profile === null) {
+      router.replace("/login");
     }
   }, [profile, router]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setWishlist(getWishlist());
+    }
+  }, []);
+
   const handleLogout = () => {
-    console.log("Logging out...");
-    logout();
-    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    window.location.href = "/login";
+    if (typeof window !== "undefined") {
+      console.log("Logging out...");
+      logout();
+      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      window.location.href = "/login";
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -58,7 +66,6 @@ const Dashboard: React.FC<DashboardProps> = ({ profile }) => {
         console.error("Token not found in cookies.");
         throw new Error("Authorization token is missing. Please log in again.");
       }
-      console.debug("Authorization token retrieved:", token);
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}auth/profile`, {
         method: "DELETE",
@@ -68,14 +75,17 @@ const Dashboard: React.FC<DashboardProps> = ({ profile }) => {
         },
       });
 
-      console.debug("DELETE request sent to:", `${process.env.NEXT_PUBLIC_API_URL}auth/profile`);
-      console.debug("Response status:", response.status);
-      console.debug("Response headers:", response.headers);
-
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Failed to delete account. Response data:", errorData);
-        throw new Error(errorData.message || "Failed to delete the account.");
+        const contentType = response.headers.get("Content-Type");
+        let errorMessage = "Failed to delete the account.";
+
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        }
+
+        console.error("Failed to delete account:", errorMessage);
+        throw new Error(errorMessage);
       }
 
       console.log("Account deleted successfully.");
@@ -87,6 +97,11 @@ const Dashboard: React.FC<DashboardProps> = ({ profile }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleRemoveFromWishlist = (id: number) => {
+    const newWishlist = removeFromWishlist(id);
+    setWishlist(newWishlist);
   };
 
   if (!profile) {
@@ -104,55 +119,92 @@ const Dashboard: React.FC<DashboardProps> = ({ profile }) => {
         <meta name="description" content="Welcome to your dashboard at ShopSmart." />
       </Head>
       <div className="flex items-center justify-center min-h-screen"
-      style={{
-        backgroundImage: "url('/background.jpg')", // Ensure your image is in the public folder
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh",
-        width: "100vw",
-        margin: "0",
-        padding: "0",
-        backgroundAttachment: "scroll", // Keeps background static when scrolling
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-        <div className="bg-urbanChic-50 shadow-lg rounded-lg p-8 w-full max-w-md">
-          <h1 className="text-3xl text-center text-urbanChic-600">
-            Welcome, {profile.name}!
-          </h1>
-          {profile.avatar && (
-            <img
-              src={profile.avatar}
-              alt="User Avatar"
-              className="w-24 h-24 rounded-full mx-auto mt-6"
-            />
-          )}
-          <p className="text-center mt-4">Email: {profile.email}</p>
-          <p className="text-center">Role: {profile.role}</p>
-          <div className="mt-6 space-y-4">
-            {isLoading ? (
-              <button className="w-full bg-gray-500 text-white px-4 py-2 rounded-lg font-medium" disabled>
-                Loading...
-              </button>
-            ) : (
-              <>
-                <button
-                  onClick={handleLogout}
-                  className="w-full bg-urbanChic-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-urbanChic-900"
-                >
-                  Log Out
-                </button>
-                <button
-                  onClick={handleDeleteAccount}
-                  className="w-full bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600"
-                >
-                  Delete Account
-                </button>
-              </>
-            )}
+        style={{
+          backgroundImage: "url('/background.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          minHeight: "100vh",
+          width: "100vw",
+          margin: "0",
+          padding: "0",
+          backgroundAttachment: "scroll",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div className="bg-urbanChic-50 shadow-lg rounded-lg p-8 w-full max-w-4xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* User Info Section */}
+            <div className="space-y-4">
+              <h1 className="text-3xl text-center text-urbanChic-600">
+                Welcome, {profile.name}!
+              </h1>
+              {profile.avatar && (
+                <img
+                  src={profile.avatar}
+                  alt="User Avatar"
+                  className="w-32 h-32 rounded-full mx-auto mt-6"
+                />
+              )}
+              <div className="space-y-2 text-center">
+                <p className="mt-4">Email: {profile.email}</p>
+                <p>Role: {profile.role}</p>
+                <p>Date of Birth: {profile.dob || 'Not provided'}</p>
+              </div>
+              
+              <div className="mt-6 space-y-4">
+                {isLoading ? (
+                  <button className="w-full bg-gray-500 text-white px-4 py-2 rounded-lg font-medium" disabled>
+                    Loading...
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full bg-urbanChic-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-urbanChic-900"
+                    >
+                      Log Out
+                    </button>
+                    <button
+                      onClick={handleDeleteAccount}
+                      className="w-full bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600"
+                    >
+                      Delete Account
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Wishlist Section */}
+            <div className="border-t md:border-t-0 md:border-l pt-6 md:pl-8">
+              <h2 className="text-2xl text-center text-urbanChic-600 mb-4">My Wishlist</h2>
+              {wishlist.length === 0 ? (
+                <p className="text-center text-gray-500">Your wishlist is empty</p>
+              ) : (
+                <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                  {wishlist.map((item) => (
+                    <div key={item.id} className="flex justify-between items-center p-3 bg-white rounded-lg shadow">
+                      <div className="flex items-center">
+                        <img src={item.image} alt={item.title} className="w-12 h-12 object-cover rounded mr-3" />
+                        <div>
+                          <p className="font-medium">{item.title}</p>
+                          <p className="text-sm text-gray-600">${item.price}</p>
+                        </div>
+                      </div>
+                      <button
+                        className="text-red-500 hover:text-red-700"
+                        onClick={() => handleRemoveFromWishlist(item.id)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -165,7 +217,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const token = cookies.token;
 
   if (!token) {
-    console.log("No token found. Redirecting to login...");
+    destroyCookie(ctx, "token");
     return {
       redirect: {
         destination: "/login",
@@ -183,8 +235,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error("API Error:", errorData);
       return {
         redirect: {
           destination: "/login",
@@ -194,19 +244,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 
     const profile = await response.json();
-    console.log("Fetched profile data:", profile);
-
-    return {
-      props: { profile }, // Pass the profile to the Dashboard page as props
-    };
+    return { props: { profile } };
   } catch (error) {
-    console.error("Error fetching profile:", error);
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
+    return { redirect: { destination: "/login", permanent: false } };
   }
 };
 

@@ -6,6 +6,8 @@ import { CartContext } from "@/context/CartContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { getSafeImage, parseImageUrl } from "@/utility/imagehelper";
+import { useAuth } from "@/context/AuthContext";
+import { addToWishlist } from "@/utility/wishlistHelper";
 
 interface Product {
   id: number;
@@ -34,6 +36,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
   const cartContext = useContext(CartContext);
   const router = useRouter(); // Initialize router
   const [relatedProducts, setRelatedProducts] = React.useState<Product[]>([]);
+  const [isAddingToWishlist, setIsAddingToWishlist] = React.useState(false);
+  const { isAuthenticated } = useAuth();
 
   if (!product) return <p>Product not found!</p>;
 
@@ -68,6 +72,29 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
         images: product.images,
       });
       router.push("/cart"); // Redirect to cart page
+    }
+  };
+
+  const handleAddToWishlist = async () => {
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+
+    setIsAddingToWishlist(true);
+    try {
+      addToWishlist({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: product.images[0]
+      });
+      alert('Product added to wishlist successfully!');
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+      alert('Failed to add to wishlist');
+    } finally {
+      setIsAddingToWishlist(false);
     }
   };
 
@@ -140,7 +167,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
             {product.price ? `$${product.price.toFixed(2)}` : "Price unavailable"}
           </p>
 
-          {/* Buttons: Add to Cart & Buy Now */}
+          {/* Buttons: Add to Cart, Buy Now & Add to Wishlist */}
           <div className="flex space-x-4">
             <button
               className="flex-1 border border-black text-black px-6 py-3 rounded-md w-xl font-medium hover:bg-olive-50 transition focus:outline-none"
@@ -154,6 +181,14 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
               onClick={handleBuyNow}
             >
               Buy Now
+            </button>
+
+            <button
+              onClick={handleAddToWishlist}
+              disabled={isAddingToWishlist}
+              className="ml-4 bg-urbanChic-100 text-urbanChic-900 px-6 py-2 rounded-lg hover:bg-urbanChic-200 transition-colors"
+            >
+              {isAddingToWishlist ? 'Adding...' : '♥ Add to Wishlist'}
             </button>
           </div>
         </div>
