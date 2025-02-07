@@ -39,6 +39,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
   const [isAddingToWishlist, setIsAddingToWishlist] = React.useState(false);
   const { isAuthenticated } = useAuth();
 
+  // Add this loading state handling
+  if (router.isFallback) {
+    return <div className="p-4 mt-32 mb-56">Loading...</div>;
+  }
+
   if (!product) return <p>Product not found!</p>;
 
   // Fake reviews for the product
@@ -227,14 +232,29 @@ export default ProductDetail;
 
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}products`);
-  const products: Product[] = await res.json();
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}products`);
+    if (!res.ok) {
+      throw new Error(`Failed to fetch products: ${res.status}`);
+    }
+    const products: Product[] = await res.json();
 
-  const paths = products.map((product) => ({
-    params: { id: product.id.toString() },
-  }));
+    // Generate paths for first 10 products to reduce build time
+    const paths = products.slice(0, 10).map((product) => ({
+      params: { id: product.id.toString() },
+    }));
 
-  return { paths, fallback: false }; // Changed from `true` to `false` unless you handle loading states
+    return {
+      paths,
+      fallback: true  // Enable fallback for products not generated at build time
+    };
+  } catch (error) {
+    console.error("Error in getStaticPaths:", error);
+    return {
+      paths: [],
+      fallback: true
+    };
+  }
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -242,8 +262,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}products/${id}`);
+    
     if (!res.ok) {
-      return { notFound: true };
+      console.error(`Failed to fetch product ${id}: ${res.status}`);
+      return { 
+        notFound: true,
+        revalidate: 60 // Retry generating this page after 60 seconds
+      };
     }
 
     const product: Product = await res.json();
@@ -252,9 +277,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
       props: {
         product,
       },
+      revalidate: 3600 // Regenerate page every hour
     };
   } catch (error) {
     console.error("Error fetching product:", error);
-    return { notFound: true };
+    return { 
+      notFound: true,
+      revalidate: 60
+    };
   }
 };
