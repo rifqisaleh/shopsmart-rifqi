@@ -182,7 +182,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
             </button>
 
             <button
-              className="flex-1 bg-olive-700 text-white px-6 py-3 w-xl rounded-md font-medium hover:bg-olive-800 transition focus:outline-none"
+              className="border border-black flex-1 bg-olive-400 text-black font-bold px-6 py-3 w-xl rounded-md font-medium hover:bg-olive-500 transition focus:outline-none"
               onClick={handleBuyNow}
             >
               Buy Now
@@ -191,7 +191,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
             <button
               onClick={handleAddToWishlist}
               disabled={isAddingToWishlist}
-              className="ml-4 bg-urbanChic-100 text-urbanChic-900 px-6 py-2 rounded-lg hover:bg-urbanChic-200 transition-colors"
+              className="border border-black ml-4 bg-white text-black px-6 py-2 rounded-md hover:bg-red-300 transition focus:outline-none"
             >
               {isAddingToWishlist ? 'Adding...' : '♥ Add to Wishlist'}
             </button>

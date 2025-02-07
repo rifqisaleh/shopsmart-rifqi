@@ -53,13 +53,23 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         <PriceConverter usdAmount={product.price} />
       </div>
   
-      {/* Add to Cart Button */}
-      <button
-        onClick={handleAddToCart}
-        className="bg-greenSage text-white px-3 py-1.5 rounded text-sm mt-2 font-medium hover:bg-olive-600 focus:outline-none"
-      >
-        Add to Cart
-      </button>
+      {/* Buttons Container */}
+      <div className="flex gap-2 mt-2">
+        {/* Add to Cart Button */}
+        <button
+          onClick={handleAddToCart}
+          className="bg-greenSage text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-olive-600 focus:outline-none"
+        >
+          Add to Cart
+        </button>
+
+        {/* View Details Button */}
+        <Link href={`/product/${product.id}`}>
+          <button className="bg-gray-600 text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-gray-700 focus:outline-none">
+            View Details
+          </button>
+        </Link>
+      </div>
     </div>
   );
 };
