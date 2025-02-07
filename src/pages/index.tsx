@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Slider from "react-slick";
 import { useRouter } from "next/router";
 import { categoryMap } from "./shop";
@@ -23,11 +23,43 @@ interface Category {
   image: string;
 }
 
+const mockFeaturedProducts = [
+  {
+    id: 1,
+    title: "Grey Hoodies Limited Edition",
+    description: "Handcrafted from genuine leather, this classic hoodie features a timeless design perfect for any occasion.",
+    price: 109.99,
+    images: ["https://i.imgur.com/R2PN9Wq.jpeg"], // Replace with actual image URL or local path
+    category: { id: "1", name: "Clothes" }
+  },
+  {
+    id: 2,
+    title: "2 Stainless Toaster",
+    description: "Enjoy perfect toast every time with adjustable browning, wide slots, and a high-lift lever. Easy to clean with a removable crumb tray and compact design.",
+    price: 199.99,
+    images: ["https://i.imgur.com/4CqHqnd.png"], // Replace with actual image URL or local path
+    category: { id: "2", name: "Electronics" }
+  },
+  {
+  id: 3,
+  title: "Sophisticated Chair",
+  description: "Designed for all-day comfort with lumbar support, breathable fabric, and adjustable height. Perfect for home or office use.",
+  price: 549.99,
+  images: ["https://i.imgur.com/g0K8Fge.jpeg"], // Replace with actual image URL or local path
+  category: { id: "4", name: "Shoes" }
+},
+  {
+    id: 4,
+    title: "Black Shoes",
+    description: "Elegant black shoes with simple velcro.",
+    price: 349.99,
+    images: ["https://i.imgur.com/EVqcx8p.png"], // Replace with actual image URL or local path
+    category: { id: "4", name: "Shoes" }
+  }
+];
+
 const LandingPage: React.FC = () => {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const staticCategories = [
     {
@@ -57,84 +89,40 @@ const LandingPage: React.FC = () => {
     }
   ];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const [productsResponse, categoriesResponse] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}products`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}categories`),
-        ]);
-  
-        if (!productsResponse.ok || !categoriesResponse.ok) {
-          throw new Error(
-            `API error: ${productsResponse.statusText} / ${categoriesResponse.statusText}`
-          );
-        }
-  
-        const [productsData, categoriesData] = await Promise.all([
-          productsResponse.json(),
-          categoriesResponse.json(),
-        ]);
-  
-        const products = Array.isArray(productsData) ? productsData : [];
-  
-        // Extract category ID from query params
-        const { category } = router.query;
-  
-        // If a category is selected, filter products by that category
-        let filteredProducts = products;
-        if (category) {
-          filteredProducts = products.filter(
-            (product) => product.category?.id.toString() === String(category)
-          );
-        }
-        
-  
-        const uniqueFeaturedProducts = new Map();
-        filteredProducts.forEach((product) => {
-          if (!uniqueFeaturedProducts.has(product.category?.id)) {
-            uniqueFeaturedProducts.set(product.category?.id, product);
-          }
-        });
-  
-        setFeaturedProducts(Array.from(uniqueFeaturedProducts.values()));
-  
-        const categories = Array.isArray(categoriesData) ? categoriesData : [];
-        const allowedCategoryIds = Object.keys(categoryMap);
-        const filteredCategories = categories.filter((category) =>
-          allowedCategoryIds.includes(category.id.toString())
-        );
-  
-        setCategories(filteredCategories);
-      } catch (err: any) {
-        setError("Failed to load data. Please try again later.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-  
-    fetchData();
-  }, [router.query.category]); // Depend on the category query param
-  
-
   const getFirstImage = (images: string[] | string | null): string => {
-    const parsedImages = parseImageUrl(images ?? undefined);
-    return parsedImages[0];
+    try {
+      const parsedImages = parseImageUrl(images ?? undefined);
+      return parsedImages[0] || '/placeholder.png'; // Add fallback image
+    } catch (error) {
+      console.error('Error parsing image:', error);
+      return '/placeholder.png';
+    }
   };
 
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 1, // Show more images
+    slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 640, settings: { slidesToShow: 1 } },
-    ],
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        }
+      },
+      {
+        breakpoint: 640,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        }
+      }
+    ]
   };
 
   return (
@@ -173,7 +161,7 @@ const LandingPage: React.FC = () => {
                 </p>
                 <button
                   onClick={() => router.push("/shop")}
-                  className="border border-black mt-8 md:mt-12 bg-white text-gray-900 font-semibold text-lg px-4 md:px-6 py-2 md:py-3 rounded shadow-lg hover:bg-gray-200 transition"
+                  className="border-2 border-black mt-8 md:mt-12 bg-white text-black font-semibold text-xl md:text-2xl px-8 md:px-12 py-4 md:py-6 rounded-lg shadow-lg hover:bg-olive-300 transition-all transform hover:scale-105"
                 >
                   Shop Now
                 </button>
@@ -190,19 +178,19 @@ const LandingPage: React.FC = () => {
           Check out our featured product – handpicked just for you!
         </p>
 
-        <Slider {...settings} slidesToShow={1}>
-        {featuredProducts.map((product) => (
+        <Slider {...settings}>
+        {mockFeaturedProducts.map((product) => (
           <div key={product.id} className="p-4 flex justify-center">
             <div
-              className="flex flex-col bg-white opacity-95 md:flex-row items-center shadow-lg rounded-3xl overflow-hidden cursor-pointer hover:shadow-xl transition md:gap-12 md:max-w-[1500px] w-full md:p-16"
+              className="flex flex-col bg-white opacity-95 md:flex-row items-center shadow-lg rounded-3xl overflow-hidden cursor-pointer hover:shadow-xl transition md:gap-12 md:max-w-[1200px] w-full md:p-12"
               onClick={() => router.push(`/product/${product.id}`)}
             >
               {/* Product Image (Always on the Left) */}
-              <div className="w-full md:w-[450px] flex justify-center">
+              <div className="w-full md:w-[350px] flex justify-center">
                 <img
                   src={getFirstImage(product.images)}
                   alt={product.title}
-                  className="w-[450px] h-[450px] md:w-[500px] h-[500px] object-cover rounded-lg"
+                  className="w-[350px] h-[350px] md:w-[400px] md:h-[400px] object-cover rounded-lg"
                 />
               </div>
 
@@ -210,9 +198,7 @@ const LandingPage: React.FC = () => {
               <div className="w-full md:w-1/2 flex-grow p-8 mt-6 mb-6 md:p-12 text-center md:text-left">
                 <h2 className="text-3xl font-semibold text-gray-900">{product.title}</h2>
                 <p className="text-lg text-gray-600 mt-4 leading-relaxed">
-                  {product.description
-                    ? product.description.substring(0, 150) + "..."
-                    : "Explore our latest high-quality products tailored just for you."}
+                  {product.description || "Explore our latest high-quality products tailored just for you."}
                 </p>
                 <p className="text-xl font-bold text-urbanChic-600 mt-6">${product.price.toFixed(2)}</p>
               </div>
