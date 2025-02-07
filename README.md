@@ -9,8 +9,8 @@ ShopSmart allows users to explore a variety of products, filter by categories, a
 
 To log-in to the account use:
 
-Email : sutris@mail.com<br/>
-Password: Qwerty123
+Email : john@mail.com<br/>
+Password: changeme
  
 
 ## Features Implemented
