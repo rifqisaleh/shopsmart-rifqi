@@ -28,7 +28,7 @@ export const categoryMap: Record<string, string> = {
 
 const ProductList: React.FC = () => {
   const router = useRouter();
-  const { search } = router.query; // Get search query from URL
+  const { search, category, minPrice, maxPrice, sortBy, sortOrder} = router.query; // Get search query from URL
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
@@ -39,14 +39,34 @@ const ProductList: React.FC = () => {
     sortBy: "name" | "price" | "recent";
     sortOrder: "asc" | "desc";
   }>({
-    categoryId: null,
+    categoryId: category ? String(category) : null,
     searchQuery: search ? String(search) : "",
-    priceRange: [0, 500],
-    sortBy: "name" as "name" | "price" | "recent",
-    sortOrder: "asc" as "asc" | "desc",
+    priceRange: [
+      minPrice ? Number(minPrice) : 0,
+      maxPrice ? Number(maxPrice) : 500
+    ],
+    sortBy: (sortBy as "name" | "price" | "recent") || "name",
+    sortOrder: (sortOrder as "asc" | "desc") || "asc",
   });
 
   const [error, setError] = useState<string | null>(null);
+
+   // Sync URL with filters
+   useEffect(() => {
+    const query = {
+      ...(filters.searchQuery && { search: filters.searchQuery }),
+      ...(filters.categoryId && { category: filters.categoryId }),
+      ...(filters.priceRange[0] > 0 && { minPrice: filters.priceRange[0] }),
+      ...(filters.priceRange[1] < 500 && { maxPrice: filters.priceRange[1] }),
+      sortBy: filters.sortBy,
+      sortOrder: filters.sortOrder,
+    };
+
+    router.push({
+      pathname: '/shop',
+      query,
+    }, undefined, { shallow: true });
+  }, [filters]);
 
   // Normalize product images
   const normalizeImages = (images: string[] | string | null | undefined): string[] => {
@@ -118,6 +138,8 @@ const ProductList: React.FC = () => {
 
     fetchProducts();
   }, [filters]);
+
+ 
 
   // Update search query from URL dynamically
   useEffect(() => {

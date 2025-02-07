@@ -29,6 +29,33 @@ const LandingPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const staticCategories = [
+    {
+      id: "1",
+      name: "Clothes",
+      image: "/categories/clothes.jpg"
+    },
+    {
+      id: "2",
+      name: "Electronics",
+      image: "/categories/electronics.jpg"
+    },
+    {
+      id: "3",
+      name: "Furnitures",
+      image: "/categories/furnitures.jpg"
+    },
+    {
+      id: "4",
+      name: "Shoes",
+      image: "/categories/shoes.jpg"
+    },
+    {
+      id: "5",
+      name: "Misc",
+      image: "/categories/misc.jpg"
+    }
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -138,10 +165,10 @@ const LandingPage: React.FC = () => {
                 }}
               >
                 <div className="w-full max-w-7xl flex flex-col items-center md:items-start justify-center text-urbanChic-600 text-center md:text-left p-6 md:p-10 pt-24 md:pt-32">
-                  <h1 className="text-4xl text-urbanChic-700 md:text-9xl drop-shadow-lg mb-4 md:mb-8">
+                  <h1 className="text-5xl text-urbanChic-700 md:text-9xl drop-shadow-lg mb-4 md:mb-8">
                   Welcome to ShopSmart!
                 </h1>
-                <p className="text-lg md:text-3xl text-gray-600 mt-4 md:mt-8 max-w-full md:max-w-2xl drop-shadow-md">
+                <p className="text-xl md:text-3xl text-gray-600 mt-4 md:mt-8 max-w-full md:max-w-2xl drop-shadow-md">
                   Discover an incredible selection of amazing products spanning a wide variety of categories, carefully curated to meet your every need and desire.
                 </p>
                 <button
@@ -154,12 +181,12 @@ const LandingPage: React.FC = () => {
             </div>
 
            
-              {/* Featured Products Section */}
-      <div className="w-full max-w-7xl mt-2 md:mt-24 mb-10">
-        <h2 className="text-4xl text-urbanChic-700 mb-4 mt-12 text-center md:text-6xl">
+    {/* Featured Products Section */}
+      <div className="w-full max-w-7xl mt-1 md:mt-12 mb-10">
+        <h2 className="text-4xl text-urbanChic-700 mb-4 mt-4 text-center md:text-6xl">
           FEATURED PRODUCTS
         </h2>
-        <p className="text-lg text-gray-600 text-center mb-10">
+        <p className="text-xl text-gray-600 text-center mb-10">
           Check out our featured product – handpicked just for you!
         </p>
 
@@ -167,7 +194,7 @@ const LandingPage: React.FC = () => {
         {featuredProducts.map((product) => (
           <div key={product.id} className="p-4 flex justify-center">
             <div
-              className="flex flex-col bg-olive-50 md:flex-row items-center bg-white shadow-lg rounded-3xl overflow-hidden cursor-pointer hover:shadow-xl transition md:gap-12 md:max-w-[1500px] w-full md:p-16"
+              className="flex flex-col bg-white opacity-95 md:flex-row items-center shadow-lg rounded-3xl overflow-hidden cursor-pointer hover:shadow-xl transition md:gap-12 md:max-w-[1500px] w-full md:p-16"
               onClick={() => router.push(`/product/${product.id}`)}
             >
               {/* Product Image (Always on the Left) */}
@@ -199,12 +226,15 @@ const LandingPage: React.FC = () => {
 
 
             {/* Shop by Category Section */}
-            <div className="w-full max-w-7xl mt-16 mb-16">
-              <h2 className="text-4xl text-urbanChic-700 mt-24 mb-24 text-center md:text-6xl">
+            <div className="w-full max-w-7xl mt-16 mb-32">
+              <h2 className="text-4xl text-urbanChic-700 mb-4 mt-10 text-center md:text-6xl">
                 SHOP BY CATEGORY
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                {categories.map((category) => (
+              <p className="text-xl text-gray-600 text-center mb-10">
+          Check out our featured product – handpicked just for you!
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                {staticCategories.map((category) => (
                   <div
                     key={category.id}
                     className="flex flex-col items-center cursor-pointer"
@@ -214,14 +244,14 @@ const LandingPage: React.FC = () => {
                     }}
                   >
                     <img
-                      src={category.image || "/placeholder.png"}
+                      src={category.image}
                       alt={category.name}
                       className="w-48 h-48 sm:w-64 sm:h-64 object-cover hover:scale-105 transition-transform"
                       onError={(e) => {
                         e.currentTarget.src = "/placeholder.png";
                       }}
                     />
-                    <span className="mt-2 text-sm text-gray-600 font-medium">
+                    <span className="mt-2 text-sm text-black font-md text-xl">
                       {category.name}
                     </span>
                   </div>

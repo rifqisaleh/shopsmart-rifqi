@@ -49,32 +49,32 @@ const ShoppingCart: React.FC = () => {
         justifyContent: "center",
       }}
     >
-      <div className="max-w-4xl mx-auto p-6 mb-24 mt-32 rounded-lg shadow-lg bg-white bg-opacity-90">
+      <div className="max-w-6xl mx-auto p-8 mb-24 mt-32 rounded-lg shadow-lg bg-white bg-opacity-90">
         <h1 className="text-4xl text-urbanChic-600 mt-12 mb-12 text-center">Shopping Cart</h1>
         {cart.length === 0 ? (
           <p className="text-center text-gray-600 mb-16 mt-16">Your cart is empty.</p>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {cart.map((item, index) => (
               <div
                 key={item.id}
-                className="flex items-center justify-between bg-white p-4 rounded-lg shadow"
+                className="flex items-center justify-between bg-white p-6 rounded-lg shadow"
               >
                 {/* Item Number */}
                 <span className="text-lg font-bold">{index + 1}.</span>
   
-                {/* Product Image */}
+                {/* Product Image - increased size */}
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="w-16 h-16 rounded object-cover ml-10 mr-10"
+                  className="w-24 h-24 rounded object-cover ml-12 mr-12"
                   onError={(e) => {
                     e.currentTarget.src = "https://via.placeholder.com/150"; // Fallback image
                   }}
                 />
   
-                {/* Product Details */}
-                <div className="flex-1">
+                {/* Product Details - adjusted spacing */}
+                <div className="flex-1 ml-4">
                   <p className="text-lg font-semibold">{item.title}</p>
                   <div className="flex items-center gap-2">
                     <p className="text-gray-600">${item.price.toFixed(2)}</p>
@@ -93,7 +93,7 @@ const ShoppingCart: React.FC = () => {
                   }
                 />
   
-                {/* Remove Button - Replace the existing button with this */}
+                {/* Remove Button  */}
                 <button
                   className="p-2 text-red-500 hover:text-red-700 transition-colors"
                   onClick={() => handleRemoveItem(item.id)}
@@ -114,7 +114,7 @@ const ShoppingCart: React.FC = () => {
               <div className="text-center mt-6">
                 <button
                   onClick={() => router.push("/checkout")}
-                  className="bg-olive-300 text-black px-6 py-3 rounded-md mb-12 hover:bg-olive-500"
+                  className="bg-olive-300 text-black px-6 py-3 rounded-md mt-12 mb-12 hover:bg-olive-500"
                 >
                   Proceed to Checkout
                 </button>

@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
         <section className="max-w-7xl mx-auto px-8 grid grid-cols-1 sm:grid-cols-3 gap-16 md:gap-24">
           {/* Newsletter Subscription Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-black">Subscribe to Our Newsletter</h3>
+            <h3 className="text-lg font-bold text-urbanChic-500">Subscribe to Our Newsletter</h3>
             <p className="text-white">
               Stay updated with our latest offers and products!
             </p>
@@ -44,8 +44,8 @@ const Footer: React.FC = () => {
               />
               <button 
                 type="submit"
-                className="w-full sm:w-auto px-6 py-2 bg-urbanChic-600 text-white rounded hover:bg-urbanChic-700"
-              >
+                className="w-full bg-olive-50 text-black px-4 py-2 rounded-lg font-bold hover:bg-olive-200 focus:outline-none"
+              >   
                 Subscribe
               </button>
               {newsletterStatus === 'success' && (
@@ -59,7 +59,7 @@ const Footer: React.FC = () => {
         
         {/* Quick Links Section */}
         <div>
-          <h3 className="text-lg text-black font-bold mb-4">Quick Links</h3>
+          <h3 className="text-lg text-urbanChic-500 font-bold mb-4">Quick Links</h3>
           <ul className="space-y-2">
             <li>
               <Link href="/" className="hover:underline text-white">
@@ -86,7 +86,7 @@ const Footer: React.FC = () => {
 
         {/* Social Icons Section */}
         <div>
-          <h3 className="text-lg font-bold text-black mb-4">Follow Us</h3>
+          <h3 className="text-lg font-bold text-urbanChic-500 mb-4">Follow Us</h3>
           <div className="flex space-x-4">
             <a href="#" className="text-white hover:text-blue-500">
               <FontAwesomeIcon icon={faFacebook} size="2x" />
