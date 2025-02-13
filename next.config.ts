@@ -14,15 +14,8 @@ const nextConfig: NextConfig = {
         hostname: "content.r9cdn.net",
         pathname: "/**",
       },
-     ],
+    ],
   },
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\.(js|ts|tsx|jsx)$/,
-      exclude: [/old\/ShopSmart-React/], // Exclude the ShopSmart-React folder
-    });
-    return config;
-  },
-};
+ };
 
 export default nextConfig;
